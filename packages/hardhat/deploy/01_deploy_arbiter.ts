@@ -3,7 +3,7 @@ import { DeployFunction } from "hardhat-deploy/types";
 
 /**
  * 部署 Arbiter Protocol 全套合约:
- * 1. MockVerifier (ZK 验证 Mock，后替换 snarkjs 生成的真实 Verifier)
+ * 1. Groth16Verifier (snarkjs 生成的真实 ZK Verifier)
  * 2. JuryRegistry (Jury 注册 + Stake + Slash)
  * 3. ArbiterEscrow (主合约：状态机 + Escrow + 结算)
  */
@@ -11,13 +11,13 @@ const deployArbiter: DeployFunction = async function (hre: HardhatRuntimeEnviron
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
 
-  // 1. 部署 MockVerifier
-  const verifier = await deploy("MockVerifier", {
+  // 1. 部署 Groth16Verifier (snarkjs 生成)
+  const verifier = await deploy("Groth16Verifier", {
     from: deployer,
     log: true,
     autoMine: true,
   });
-  console.log("MockVerifier deployed to:", verifier.address);
+  console.log("Groth16Verifier deployed to:", verifier.address);
 
   // 2. 部署 JuryRegistry
   const juryRegistry = await deploy("JuryRegistry", {
@@ -37,10 +37,11 @@ const deployArbiter: DeployFunction = async function (hre: HardhatRuntimeEnviron
   console.log("ArbiterEscrow deployed to:", arbiterEscrow.address);
 
   // 4. 设置 JuryRegistry 的 escrow 地址
-  const registryContract = await hre.ethers.getContract("JuryRegistry", deployer);
+  const registryContract = await hre.ethers.getContract<any>("JuryRegistry", deployer);
   const currentEscrow = await registryContract.escrowContract();
   if (currentEscrow === "0x0000000000000000000000000000000000000000") {
-    const tx = await registryContract.setEscrowContract(arbiterEscrow.address);
+    const gas = await registryContract.setEscrowContract.estimateGas(arbiterEscrow.address);
+    const tx = await registryContract.setEscrowContract(arbiterEscrow.address, { gasLimit: (gas * 120n) / 100n });
     await tx.wait();
     console.log("JuryRegistry.setEscrowContract ->", arbiterEscrow.address);
   }
