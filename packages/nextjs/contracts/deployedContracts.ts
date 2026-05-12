@@ -333,6 +333,11 @@ const deployedContracts = {
               name: "deadline",
               type: "uint256",
             },
+            {
+              internalType: "uint256",
+              name: "juryReward",
+              type: "uint256",
+            },
           ],
           name: "createTask",
           outputs: [
@@ -1449,6 +1454,11 @@ const deployedContracts = {
             {
               internalType: "uint256",
               name: "deadline",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "juryReward",
               type: "uint256",
             },
           ],

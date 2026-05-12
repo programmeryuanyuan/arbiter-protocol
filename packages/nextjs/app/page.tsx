@@ -9,17 +9,14 @@ import { useTargetNetwork } from "~~/hooks/scaffold-eth";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { useScaffoldWatchContractEvent } from "~~/hooks/scaffold-eth";
 import CreateTaskButton from "~~/components/CreateTaskButton";
-import AcceptTaskButton from "~~/components/AcceptTaskButton";
 import JuryRegisterButton from "~~/components/JuryRegisterButton";
-import SubmitResultButton from "~~/components/SubmitResultButton";
-import CommitScoreButton from "~~/components/CommitScoreButton";
-import RevealScoreButton from "~~/components/RevealScoreButton";
 import ClaimTimeoutButton from "~~/components/ClaimTimeoutButton";
 import StatusBadge from "~~/components/StatusBadge";
 import TaskStatusTimeline from "~~/components/TaskStatusTimeline";
 import ZKVerificationPanel from "~~/components/ZKVerificationPanel";
 import SettlementPanel from "~~/components/SettlementPanel";
 import JuryPanel from "~~/components/JuryPanel";
+import DemoControls from "~~/components/DemoControls";
 
 // ========== 状态配置 ==========
 const STATUS_MAP: Record<number, string> = {
@@ -56,12 +53,13 @@ const Home: NextPage = () => {
     }
   }, [taskCount, taskId]);
 
+  const hasTask = taskCount !== undefined && taskCount > 0n;
+
   // 2. 读取任务详情
   const { data: taskData, isLoading: taskLoading, refetch: refetchTask } = useScaffoldReadContract({
     contractName: "ArbiterEscrow",
     functionName: "getTask",
-    args: [BigInt(taskId)],
-    enabled: taskCount !== undefined && taskCount > 0n,
+    args: [hasTask ? BigInt(taskId) : undefined],
     watch: false,
   });
 
@@ -69,8 +67,7 @@ const Home: NextPage = () => {
   const { data: juryRecords, refetch: refetchJury } = useScaffoldReadContract({
     contractName: "ArbiterEscrow",
     functionName: "getJuryRecords",
-    args: [BigInt(taskId)],
-    enabled: taskCount !== undefined && taskCount > 0n,
+    args: [hasTask ? BigInt(taskId) : undefined],
     watch: false,
   });
 
@@ -256,18 +253,7 @@ const Home: NextPage = () => {
         {/* ---- 操作按钮区 ---- */}
         <div className="flex flex-wrap items-center gap-3 mb-6">
           <JuryRegisterButton />
-          {statusName === "Created" && (
-            <AcceptTaskButton taskId={taskId} />
-          )}
-          {statusName === "Accepted" && (
-            <SubmitResultButton taskId={taskId} />
-          )}
-          {(statusName === "ZKPassed" || statusName === "Deliberating") && (
-            <>
-              <CommitScoreButton taskId={taskId} />
-              <RevealScoreButton taskId={taskId} />
-            </>
-          )}
+          <DemoControls taskId={taskId} status={statusName} />
           {statusName === "Deliberating" && isDeadlineExpired && (
             <ClaimTimeoutButton taskId={taskId} />
           )}
