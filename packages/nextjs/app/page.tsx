@@ -165,9 +165,9 @@ const Home: NextPage = () => {
               <p className="text-base-content/60 mt-2">
                 The ArbiterEscrow contract has no tasks yet.
               </p>
-              <p className="text-xs text-base-content/40 mt-1">
-                Use the Debug Contracts tab to create a task, or run the demo script.
-              </p>
+              <div className="mt-4">
+                <CreateTaskButton />
+              </div>
             </div>
           </div>
         </div>
