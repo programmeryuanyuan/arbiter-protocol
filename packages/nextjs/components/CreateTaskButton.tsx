@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { parseEther, keccak256, stringToHex } from "viem";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { getParsedError, notification } from "~~/utils/scaffold-eth";
 
 export default function CreateTaskButton() {
   const [showModal, setShowModal] = useState(false);
@@ -46,9 +47,11 @@ export default function CreateTaskButton() {
         ],
         value: totalValue,
       });
+      notification.success("Task created successfully!");
       setShowModal(false);
     } catch (err) {
       console.error("Create task failed:", err);
+      notification.error(getParsedError(err));
     }
   };
 

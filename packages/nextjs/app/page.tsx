@@ -14,16 +14,14 @@ import JuryRegisterButton from "~~/components/JuryRegisterButton";
 import SubmitResultButton from "~~/components/SubmitResultButton";
 import CommitScoreButton from "~~/components/CommitScoreButton";
 import RevealScoreButton from "~~/components/RevealScoreButton";
+import ClaimTimeoutButton from "~~/components/ClaimTimeoutButton";
+import StatusBadge from "~~/components/StatusBadge";
+import TaskStatusTimeline from "~~/components/TaskStatusTimeline";
+import ZKVerificationPanel from "~~/components/ZKVerificationPanel";
+import SettlementPanel from "~~/components/SettlementPanel";
+import JuryPanel from "~~/components/JuryPanel";
 
 // ========== 状态配置 ==========
-const STATUS_STEPS = [
-  { key: "Created", label: "Created", time: "0:00" },
-  { key: "Accepted", label: "Accepted", time: "0:12" },
-  { key: "ZKPassed", label: "ZK Passed", time: "0:43" },
-  { key: "Deliberating", label: "Jury", time: "0:51" },
-  { key: "Resolved", label: "Done", time: "--" },
-];
-
 const STATUS_MAP: Record<number, string> = {
   0: "Created",
   1: "Accepted",
@@ -32,45 +30,11 @@ const STATUS_MAP: Record<number, string> = {
   4: "Resolved",
 };
 
-const STATUS_COLORS: Record<string, string> = {
-  Created: "neutral",
-  Accepted: "primary",
-  ZKPassed: "accent",
-  Deliberating: "warning",
-  Resolved: "success",
-};
-
 // ========== 辅助函数 ==========
-const formatDeadline = (timestamp: bigint | undefined) => {
-  if (!timestamp) return "--";
-  const date = new Date(Number(timestamp) * 1000);
-  return date.toLocaleString();
-};
-
 const formatEscrow = (wei: bigint | undefined) => {
   if (!wei) return "0";
   return parseFloat(formatEther(wei)).toFixed(4);
 };
-
-const shortenAddress = (addr: string | undefined) => {
-  if (!addr || addr === "0x0000000000000000000000000000000000000000") return "--";
-  return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
-};
-
-// ========== 辅助组件 ==========
-const StatusBadge = ({ status }: { status: string }) => {
-  const color = STATUS_COLORS[status] || "neutral";
-  return <span className={`badge badge-${color} badge-lg font-semibold`}>{status}</span>;
-};
-
-const CheckItem = ({ label, passed }: { label: string; passed: boolean }) => (
-  <div className="flex items-center gap-2 py-1">
-    <span className={`text-lg ${passed ? "text-success" : "text-error"}`}>
-      {passed ? "✅" : "❌"}
-    </span>
-    <span className="text-sm">{label}</span>
-  </div>
-);
 
 // ========== 主页面 ==========
 const Home: NextPage = () => {
@@ -151,7 +115,7 @@ const Home: NextPage = () => {
 
   // 数据转换
   const statusName = taskData ? STATUS_MAP[Number(taskData.status)] : "Created";
-  const currentStatusIndex = STATUS_STEPS.findIndex(s => s.key === statusName);
+  const currentStatusIndex = ["Created", "Accepted", "ZKPassed", "Deliberating", "Resolved"].indexOf(statusName);
 
   const revealedJury = (juryRecords || []).filter(j => j.revealed);
   const avgScore = revealedJury.length > 0
@@ -165,6 +129,12 @@ const Home: NextPage = () => {
   const zkLengthPassed = hasResult && taskData ? Number(taskData.objective.minLength) > 0 : false;
   const zkFieldsPassed = hasResult && taskData ? Number(taskData.objective.minFieldCount) > 0 : false;
   const zkProofVerified = hasResult;
+
+  // Deadline 是否过期
+  const nowSeconds = Math.floor(Date.now() / 1000);
+  const isDeadlineExpired = taskData && Number(taskData.deadline) > 0
+    ? nowSeconds > Number(taskData.deadline)
+    : false;
 
   // ========== 空状态 ==========
   if (!taskCount || taskCount === 0n) {
@@ -281,27 +251,7 @@ const Home: NextPage = () => {
         </div>
 
         {/* ---- 任务状态时间轴 ---- */}
-        <div className="card bg-base-100 shadow-sm border border-base-300 mb-6">
-          <div className="card-body">
-            <h2 className="card-title text-lg mb-4">Task Status Flow</h2>
-            <ul className="steps steps-horizontal w-full">
-              {STATUS_STEPS.map((step, idx) => {
-                const isCompleted = idx < currentStatusIndex;
-                const isCurrent = idx === currentStatusIndex;
-                return (
-                  <li
-                    key={step.key}
-                    className={`step ${isCompleted || isCurrent ? "step-primary" : ""}`}
-                    data-content={isCompleted ? "✓" : isCurrent ? "●" : ""}
-                  >
-                    <div className="text-xs mt-1 font-medium">{step.label}</div>
-                    <div className="text-xs text-base-content/50">{step.time}</div>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </div>
+        <TaskStatusTimeline currentStatusIndex={currentStatusIndex} />
 
         {/* ---- 操作按钮区 ---- */}
         <div className="flex flex-wrap items-center gap-3 mb-6">
@@ -318,6 +268,9 @@ const Home: NextPage = () => {
               <RevealScoreButton taskId={taskId} />
             </>
           )}
+          {statusName === "Deliberating" && isDeadlineExpired && (
+            <ClaimTimeoutButton taskId={taskId} />
+          )}
         </div>
 
         {/* ---- 主体内容 Grid ---- */}
@@ -325,203 +278,31 @@ const Home: NextPage = () => {
 
           {/* 左列：ZK + Settlement */}
           <div className="flex flex-col gap-6">
-
-            {/* ZK 验证面板 */}
-            <div className="card bg-base-100 shadow-sm border border-base-300">
-              <div className="card-body">
-                <h2 className="card-title text-lg flex items-center gap-2">
-                  <span className="text-xl">🔐</span> ZK Verification
-                </h2>
-                <div className="divider my-2"></div>
-                {taskLoading ? (
-                  <div className="flex justify-center py-4">
-                    <span className="loading loading-spinner loading-md"></span>
-                  </div>
-                ) : (
-                  <>
-                    <CheckItem
-                      label={`Length check: min ${taskData ? Number(taskData.objective.minLength) : 0} chars`}
-                      passed={zkLengthPassed}
-                    />
-                    <CheckItem
-                      label={`Fields check: min ${taskData ? Number(taskData.objective.minFieldCount) : 0} required`}
-                      passed={zkFieldsPassed}
-                    />
-                    <CheckItem
-                      label="ZK Proof verified on-chain"
-                      passed={zkProofVerified}
-                    />
-                    {hasResult && taskData && taskData.resultURI ? (
-                      <div className="mt-3 p-3 bg-base-200 rounded-lg">
-                        <div className="text-xs text-base-content/60 mb-1">Result IPFS:</div>
-                        <a
-                          href={`https://ipfs.io/ipfs/${taskData.resultURI.replace("ipfs://", "")}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-info hover:underline text-xs font-mono break-all"
-                        >
-                          {taskData.resultURI}
-                        </a>
-                      </div>
-                    ) : (
-                      <div className="mt-3 p-3 bg-base-200 rounded-lg text-xs text-base-content/50 text-center">
-                        Result not submitted yet
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* 结算结果面板 */}
-            <div className="card bg-base-100 shadow-sm border border-base-300">
-              <div className="card-body">
-                <h2 className="card-title text-lg flex items-center gap-2">
-                  <span className="text-xl">💰</span> Settlement
-                </h2>
-                <div className="divider my-2"></div>
-
-                {/* 任务基本信息 */}
-                {taskLoading ? (
-                  <div className="flex justify-center py-4">
-                    <span className="loading loading-spinner loading-md"></span>
-                  </div>
-                ) : (
-                  <>
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-4 text-sm">
-                      <div className="text-base-content/60">Payer</div>
-                      <div className="font-mono text-right">{shortenAddress(taskData?.payer)}</div>
-                      <div className="text-base-content/60">Worker</div>
-                      <div className="font-mono text-right">{shortenAddress(taskData?.worker)}</div>
-                      <div className="text-base-content/60">Deadline</div>
-                      <div className="text-right">{formatDeadline(taskData?.deadline)}</div>
-                      <div className="text-base-content/60">Escrow</div>
-                      <div className="font-bold text-accent text-right">{formatEscrow(taskData?.escrow)} MON</div>
-                    </div>
-
-                    {statusName === "Resolved" ? (
-                      <div className="space-y-3 pt-3 border-t border-base-300">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-base-content/60">Final Score</span>
-                          <span className="text-2xl font-bold text-success">{avgScore}/100</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-base-content/60">Min Score</span>
-                          <span className="font-medium">{taskData ? Number(taskData.minScore) : "--"}/100</span>
-                        </div>
-                        <div className="divider my-1"></div>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold">{formatEscrow(taskData?.escrow)} MON</span>
-                          </div>
-                          <span className="text-2xl">→</span>
-                          <div className="flex items-center gap-2">
-                            {taskData && Number(avgScore) >= Number(taskData.minScore) ? (
-                              <>
-                                <span className="badge badge-success badge-lg">Agent B</span>
-                                <span className="text-success text-lg">✅</span>
-                              </>
-                            ) : (
-                              <>
-                                <span className="badge badge-error badge-lg">Agent A</span>
-                                <span className="text-error text-lg">↩️</span>
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-center py-4 pt-6 border-t border-base-300">
-                        <span className="text-4xl">⏳</span>
-                        <p className="text-base-content/60 mt-2">Awaiting jury deliberation...</p>
-                        <p className="text-xs text-base-content/40 mt-1">
-                          Settlement will trigger automatically after all jury reveals
-                        </p>
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
-
+            <ZKVerificationPanel
+              taskLoading={taskLoading}
+              taskData={taskData}
+              hasResult={hasResult}
+              zkLengthPassed={zkLengthPassed}
+              zkFieldsPassed={zkFieldsPassed}
+              zkProofVerified={zkProofVerified}
+            />
+            <SettlementPanel
+              taskLoading={taskLoading}
+              taskData={taskData}
+              statusName={statusName}
+              avgScore={avgScore}
+            />
           </div>
 
           {/* 右列：Jury Panel */}
-          <div className="card bg-base-100 shadow-sm border border-base-300">
-            <div className="card-body">
-              <h2 className="card-title text-lg flex items-center gap-2">
-                <span className="text-xl">⚖️</span> Jury Deliberation
-              </h2>
-              <div className="divider my-2"></div>
-
-              {taskLoading ? (
-                <div className="flex justify-center py-8">
-                  <span className="loading loading-spinner loading-md"></span>
-                </div>
-              ) : (
-                <>
-                  {/* Jury 列表 */}
-                  <div className="space-y-3">
-                    {(juryRecords || []).length === 0 ? (
-                      <div className="text-center py-4 text-base-content/50 text-sm">
-                        No jury assigned yet
-                      </div>
-                    ) : (
-                      (juryRecords || []).map((jury, idx) => (
-                        <div key={idx} className="p-3 bg-base-200 rounded-lg">
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-2">
-                              <span className="font-mono text-sm font-bold">Jury #{idx + 1}</span>
-                              <span className="text-xs text-base-content/50">{shortenAddress(jury.juror)}</span>
-                            </div>
-                            {jury.revealed && (
-                              <span className="text-xl font-bold text-primary">{Number(jury.score)}</span>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-1">
-                              <span className={`badge badge-sm ${jury.committed ? "badge-success" : "badge-outline badge-warning"}`}>
-                                C{jury.committed ? "✓" : "○"}
-                              </span>
-                              <span className="text-xs text-base-content/50">Commit</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <span className={`badge badge-sm ${jury.revealed ? "badge-success" : "badge-outline badge-warning"}`}>
-                                R{jury.revealed ? "✓" : "○"}
-                              </span>
-                              <span className="text-xs text-base-content/50">Reveal</span>
-                            </div>
-                            {!jury.revealed && (
-                              <span className="text-xs text-warning ml-auto">Waiting...</span>
-                            )}
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-
-                  {/* 平均分 */}
-                  {(juryRecords || []).length > 0 && (
-                    <>
-                      <div className="divider my-3"></div>
-                      <div className="flex items-center justify-between p-3 bg-primary/10 rounded-lg">
-                        <span className="font-medium">Average Score</span>
-                        <span className="text-2xl font-bold text-primary">{avgScore}</span>
-                      </div>
-                      <div className="flex items-center justify-between mt-2 px-1">
-                        <span className="text-xs text-base-content/60">
-                          {revealedJury.length}/{(juryRecords || []).length} revealed
-                        </span>
-                        <span className="text-xs text-base-content/60">
-                          Min: {taskData ? Number(taskData.minScore) : "--"}
-                        </span>
-                      </div>
-                    </>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
+          <JuryPanel
+            taskLoading={taskLoading}
+            juryRecords={juryRecords || []}
+            connectedAddress={connectedAddress}
+            avgScore={avgScore}
+            revealedCount={revealedJury.length}
+            minScore={taskData ? Number(taskData.minScore) : 0}
+          />
 
         </div>
 

@@ -2,6 +2,7 @@
 
 import { parseEther } from "viem";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { getParsedError, notification } from "~~/utils/scaffold-eth";
 
 export default function JuryRegisterButton() {
   const { writeContractAsync, isPending } = useScaffoldWriteContract({
@@ -14,8 +15,10 @@ export default function JuryRegisterButton() {
         functionName: "register",
         value: parseEther("0.01"),
       });
+      notification.success("Registered as jury!");
     } catch (err) {
       console.error("Register failed:", err);
+      notification.error(getParsedError(err));
     }
   };
 

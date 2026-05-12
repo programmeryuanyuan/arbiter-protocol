@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { getParsedError, notification } from "~~/utils/scaffold-eth";
 
 interface Props {
   taskId: number;
@@ -31,9 +32,11 @@ export default function RevealScoreButton({ taskId }: Props) {
         functionName: "revealScore",
         args: [BigInt(taskId), BigInt(score), salt as `0x${string}`],
       });
+      notification.success("Score revealed!");
       setShowModal(false);
     } catch (err) {
       console.error("Reveal failed:", err);
+      notification.error(getParsedError(err));
     }
   };
 

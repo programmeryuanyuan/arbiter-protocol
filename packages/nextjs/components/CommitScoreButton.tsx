@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { keccak256, toHex, encodePacked } from "viem";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { getParsedError, notification } from "~~/utils/scaffold-eth";
 
 interface Props {
   taskId: number;
@@ -38,9 +39,11 @@ export default function CommitScoreButton({ taskId }: Props) {
       // 保存 salt 和 score 到 localStorage 以便后续 reveal
       localStorage.setItem(`jury_salt_${taskId}`, salt);
       localStorage.setItem(`jury_score_${taskId}`, score.toString());
+      notification.success("Score committed! Remember your salt for reveal.");
       setShowModal(false);
     } catch (err) {
       console.error("Commit failed:", err);
+      notification.error(getParsedError(err));
     }
   };
 

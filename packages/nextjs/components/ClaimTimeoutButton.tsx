@@ -7,31 +7,31 @@ interface Props {
   taskId: number;
 }
 
-export default function AcceptTaskButton({ taskId }: Props) {
+export default function ClaimTimeoutButton({ taskId }: Props) {
   const { writeContractAsync, isPending } = useScaffoldWriteContract({
     contractName: "ArbiterEscrow",
   });
 
-  const handleAccept = async () => {
+  const handleClaim = async () => {
     try {
       await writeContractAsync({
-        functionName: "acceptTask",
+        functionName: "claimTimeout",
         args: [BigInt(taskId)],
       });
-      notification.success("Task accepted!");
+      notification.success("Timeout claimed! Task resolved.");
     } catch (err) {
-      console.error("Accept task failed:", err);
+      console.error("Claim timeout failed:", err);
       notification.error(getParsedError(err));
     }
   };
 
   return (
     <button
-      className={`btn btn-accent btn-sm ${isPending ? "loading" : ""}`}
-      onClick={handleAccept}
+      className={`btn btn-error btn-sm ${isPending ? "loading" : ""}`}
+      onClick={handleClaim}
       disabled={isPending}
     >
-      {isPending ? "Accepting..." : "Accept Task"}
+      {isPending ? "Claiming..." : "Claim Timeout"}
     </button>
   );
 }

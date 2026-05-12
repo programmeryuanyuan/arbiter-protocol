@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { keccak256, toUtf8Bytes } from "viem";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { getParsedError, notification } from "~~/utils/scaffold-eth";
 
 interface Props {
   taskId: number;
@@ -45,9 +46,11 @@ export default function SubmitResultButton({ taskId }: Props) {
         functionName: "submitResult",
         args: [BigInt(taskId), commitment, resultURI, proofA, proofB, proofC, publicSignals],
       });
+      notification.success("Result submitted!");
       setShowModal(false);
     } catch (err) {
       console.error("Submit result failed:", err);
+      notification.error(getParsedError(err));
     }
   };
 
