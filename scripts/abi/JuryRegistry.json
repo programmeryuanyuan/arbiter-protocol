@@ -1,0 +1,390 @@
+{
+  "address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "juror",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "stake",
+          "type": "uint256"
+        }
+      ],
+      "name": "JurorRegistered",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "juror",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "JurorSlashed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "juror",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "JurorWithdrawn",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "MIN_STAKE",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "escrowContract",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
+      "name": "getJuror",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getJurorCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "juror",
+          "type": "address"
+        }
+      ],
+      "name": "isEligible",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "jurorList",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "jurors",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "stake",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "active",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "register",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "juror",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "_active",
+          "type": "bool"
+        }
+      ],
+      "name": "setActive",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_escrow",
+          "type": "address"
+        }
+      ],
+      "name": "setEscrowContract",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "juror",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "bps",
+          "type": "uint256"
+        }
+      ],
+      "name": "slash",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "withdraw",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x4cc155f1f52751e011095843851add872da2ab2899d037d7a42841fd0cf09a95",
+  "receipt": {
+    "to": null,
+    "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "contractAddress": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+    "transactionIndex": 0,
+    "gasUsed": "530373",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0xc63f70873749f72009dc09b061efb054edc8b4400931479ba59d8ac4033f0dde",
+    "transactionHash": "0x4cc155f1f52751e011095843851add872da2ab2899d037d7a42841fd0cf09a95",
+    "logs": [],
+    "blockNumber": 45101,
+    "cumulativeGasUsed": "530373",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "b2e2b1ad5924feb2ae7c241b539ea318",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.20+commit.a1b79de6\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"juror\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"stake\",\"type\":\"uint256\"}],\"name\":\"JurorRegistered\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"juror\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"JurorSlashed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"juror\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"JurorWithdrawn\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"MIN_STAKE\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"escrowContract\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"name\":\"getJuror\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getJurorCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"juror\",\"type\":\"address\"}],\"name\":\"isEligible\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"jurorList\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"jurors\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"stake\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"active\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"register\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"juror\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"_active\",\"type\":\"bool\"}],\"name\":\"setActive\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_escrow\",\"type\":\"address\"}],\"name\":\"setEscrowContract\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"juror\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"bps\",\"type\":\"uint256\"}],\"name\":\"slash\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"title\":\"JuryRegistry - Jury \\u6ce8\\u518c\\u3001Stake \\u548c Slash \\u7ba1\\u7406\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"getJuror(uint256)\":{\"notice\":\"\\u83b7\\u53d6 Jury \\u5730\\u5740\"},\"getJurorCount()\":{\"notice\":\"\\u83b7\\u53d6\\u5df2\\u6ce8\\u518c Jury \\u603b\\u6570\"},\"isEligible(address)\":{\"notice\":\"\\u68c0\\u67e5\\u662f\\u5426\\u5df2\\u6ce8\\u518c\\u4e14\\u6709\\u8db3\\u591f stake\"},\"register()\":{\"notice\":\"Jury \\u6ce8\\u518c\\u5e76\\u8d28\\u62bc\"},\"setActive(address,bool)\":{\"notice\":\"ArbiterEscrow \\u8c03\\u7528\\uff1a\\u8bbe\\u7f6e Jury \\u6d3b\\u8dc3\\u72b6\\u6001\"},\"setEscrowContract(address)\":{\"notice\":\"\\u8bbe\\u7f6e ArbiterEscrow \\u5408\\u7ea6\\u5730\\u5740\\uff08\\u90e8\\u7f72\\u540e\\u8c03\\u7528\\u4e00\\u6b21\\uff09\"},\"slash(address,uint256)\":{\"notice\":\"ArbiterEscrow \\u8c03\\u7528\\uff1aslash Jury stake\"},\"withdraw()\":{\"notice\":\"\\u65e0\\u6d3b\\u8dc3\\u4efb\\u52a1\\u65f6\\u53d6\\u56de stake\"}},\"notice\":\"Jury Agent \\u9700\\u8d28\\u62bc\\u4fdd\\u8bc1\\u91d1\\u53c2\\u4e0e\\u8bc4\\u5ba1\\uff0c\\u8fdd\\u89c4\\u884c\\u4e3a\\u5c06\\u88ab slash\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/JuryRegistry.sol\":\"JuryRegistry\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/JuryRegistry.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.20;\\n\\n/// @title JuryRegistry - Jury \\u6ce8\\u518c\\u3001Stake \\u548c Slash \\u7ba1\\u7406\\n/// @notice Jury Agent \\u9700\\u8d28\\u62bc\\u4fdd\\u8bc1\\u91d1\\u53c2\\u4e0e\\u8bc4\\u5ba1\\uff0c\\u8fdd\\u89c4\\u884c\\u4e3a\\u5c06\\u88ab slash\\ncontract JuryRegistry {\\n    uint256 public constant MIN_STAKE = 0.01 ether;\\n\\n    struct Juror {\\n        uint256 stake;\\n        bool active; // \\u662f\\u5426\\u6709\\u6d3b\\u8dc3\\u4efb\\u52a1\\n    }\\n\\n    mapping(address => Juror) public jurors;\\n    address[] public jurorList;\\n\\n    address public escrowContract; // \\u4ec5 ArbiterEscrow \\u53ef\\u8c03\\u7528 slash\\n\\n    event JurorRegistered(address indexed juror, uint256 stake);\\n    event JurorWithdrawn(address indexed juror, uint256 amount);\\n    event JurorSlashed(address indexed juror, uint256 amount);\\n\\n    modifier onlyEscrow() {\\n        require(msg.sender == escrowContract, \\\"Only escrow\\\");\\n        _;\\n    }\\n\\n    constructor() {}\\n\\n    /// @notice \\u8bbe\\u7f6e ArbiterEscrow \\u5408\\u7ea6\\u5730\\u5740\\uff08\\u90e8\\u7f72\\u540e\\u8c03\\u7528\\u4e00\\u6b21\\uff09\\n    function setEscrowContract(address _escrow) external {\\n        require(escrowContract == address(0), \\\"Already set\\\");\\n        escrowContract = _escrow;\\n    }\\n\\n    /// @notice Jury \\u6ce8\\u518c\\u5e76\\u8d28\\u62bc\\n    function register() external payable {\\n        require(msg.value >= MIN_STAKE, \\\"Stake too low\\\");\\n        require(jurors[msg.sender].stake == 0, \\\"Already registered\\\");\\n\\n        jurors[msg.sender] = Juror({ stake: msg.value, active: false });\\n        jurorList.push(msg.sender);\\n\\n        emit JurorRegistered(msg.sender, msg.value);\\n    }\\n\\n    /// @notice \\u65e0\\u6d3b\\u8dc3\\u4efb\\u52a1\\u65f6\\u53d6\\u56de stake\\n    function withdraw() external {\\n        Juror storage j = jurors[msg.sender];\\n        require(j.stake > 0, \\\"Not registered\\\");\\n        require(!j.active, \\\"Has active task\\\");\\n\\n        uint256 amount = j.stake;\\n        j.stake = 0;\\n        _removeFromList(msg.sender);\\n\\n        (bool ok, ) = msg.sender.call{value: amount}(\\\"\\\");\\n        require(ok, \\\"Transfer failed\\\");\\n\\n        emit JurorWithdrawn(msg.sender, amount);\\n    }\\n\\n    /// @notice ArbiterEscrow \\u8c03\\u7528\\uff1aslash Jury stake\\n    function slash(address juror, uint256 bps) external onlyEscrow {\\n        Juror storage j = jurors[juror];\\n        require(j.stake > 0, \\\"Not registered\\\");\\n\\n        uint256 amount = (j.stake * bps) / 10000;\\n        j.stake -= amount;\\n\\n        // slash \\u91d1\\u989d\\u7559\\u5728\\u5408\\u7ea6\\u4f5c\\u4e3a protocol treasury\\n        emit JurorSlashed(juror, amount);\\n    }\\n\\n    /// @notice ArbiterEscrow \\u8c03\\u7528\\uff1a\\u8bbe\\u7f6e Jury \\u6d3b\\u8dc3\\u72b6\\u6001\\n    function setActive(address juror, bool _active) external onlyEscrow {\\n        jurors[juror].active = _active;\\n    }\\n\\n    /// @notice \\u83b7\\u53d6\\u5df2\\u6ce8\\u518c Jury \\u603b\\u6570\\n    function getJurorCount() external view returns (uint256) {\\n        return jurorList.length;\\n    }\\n\\n    /// @notice \\u83b7\\u53d6 Jury \\u5730\\u5740\\n    function getJuror(uint256 index) external view returns (address) {\\n        return jurorList[index];\\n    }\\n\\n    /// @notice \\u68c0\\u67e5\\u662f\\u5426\\u5df2\\u6ce8\\u518c\\u4e14\\u6709\\u8db3\\u591f stake\\n    function isEligible(address juror) external view returns (bool) {\\n        return jurors[juror].stake >= MIN_STAKE && !jurors[juror].active;\\n    }\\n\\n    function _removeFromList(address juror) internal {\\n        for (uint256 i = 0; i < jurorList.length; i++) {\\n            if (jurorList[i] == juror) {\\n                jurorList[i] = jurorList[jurorList.length - 1];\\n                jurorList.pop();\\n                break;\\n            }\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0xe3e7bbda272c211aeb6e8a6399d848a0a06b10ab0e57226379ec6e70e4eb5bf0\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x608080604052346100165761089f908161001c8239f35b600080fdfe60406080815260048036101561001457600080fd5b600091823560e01c806302fb4d85146106c45780631aa3a008146105485780632ce962cf146104e25780633ccfd60b1461029657806366e305fd1461023a5780638e230e6f1461020f578063a0385450146101d6578063cb1c2b5c146101b4578063dca5f6b01461016e578063e125523a1461014f578063e42a96e7146101225763f42375b5146100a457600080fd5b3461011e57602036600319011261011e576100bd61078a565b600254926001600160a01b03928385166100ed57505016906bffffffffffffffffffffffff60a01b161760025580f35b906020606492519162461bcd60e51b8352820152600b60248201526a105b1c9958591e481cd95d60aa1b6044820152fd5b8280fd5b83823461014b578160031936011261014b5760025490516001600160a01b039091168152602090f35b5080fd5b83823461014b578160031936011261014b576020906001549051908152f35b83823461014b57602036600319011261014b579081906001600160a01b0361019461078a565b168152806020522060ff6001825492015416825191825215156020820152f35b83823461014b578160031936011261014b5760209051662386f26fc100008152f35b50823461020c57602036600319011261020c57506101f6602092356107a5565b905491519160018060a01b039160031b1c168152f35b80fd5b50903461011e57602036600319011261011e57359160015483101561020c57506101f66020926107a5565b83823461014b57602036600319011261014b5760209181906001600160a01b0361026261078a565b1681528084522090662386f26fc10000825410159182610286575b50519015158152f35b6001015460ff161591508361027d565b503461011e578260031936011261011e5733835282602052808320918254926102c08415156107f2565b60019060ff82820154166104ad5785905584815b6103b6575b50508380808086335af13d156103b15767ffffffffffffffff3d81811161039e57845191601f8201601f19908116603f011683019081118382101761038b57855281528560203d92013e5b156103575750519081527fb1a732a1a3ef1f32bbba697c21c2f40e16e057be0200c8169e378772d5f3b4c260203392a280f35b6020606492519162461bcd60e51b8352820152600f60248201526e151c985b9cd9995c8819985a5b1959608a1b6044820152fd5b634e487b7160e01b885260418552602488fd5b634e487b7160e01b875260418452602487fd5b610324565b8154808210156104a7576103c9826107a5565b90546003926001600160a01b0392909190841b1c8216331461040c5750505060001981146103f9578101816102d4565b634e487b7160e01b865260118352602486fd5b9091939260001991828101908111610494579061043c8461042f61045b946107a5565b905490891b1c16916107a5565b90919082549060031b9160018060a01b03809116831b921b1916179055565b8254801561048157019261046e846107a5565b81939154921b1b191690555538806102d9565b634e487b7160e01b895260318652602489fd5b634e487b7160e01b8a526011875260248afd5b506102d9565b835162461bcd60e51b8152602081850152600f60248201526e48617320616374697665207461736b60881b6044820152606490fd5b83823461014b578060031936011261014b576104fc61078a565b6024359081151582036105445761054192600191828060a01b03906105268260025416331461082f565b168552846020528420019060ff801983541691151516179055565b80f35b8380fd5b50908260031936011261011e57662386f26fc10000341061069257338352826020528183205461065b57815182810181811067ffffffffffffffff82111761064857906105c1918452348152600160208201868152338752866020528587209251835551151591019060ff801983541691151516179055565b600154906801000000000000000082101561063557506105ea81600161060893016001556107a5565b81546001600160a01b0360039290921b91821b19163390911b179055565b513481527f302e82b0b7908cfac0232eeb6a83332cbf587d0cb58eaa7ba72f884c149910fa60203392a280f35b634e487b7160e01b845260419052602483fd5b634e487b7160e01b855260418352602485fd5b6020606492519162461bcd60e51b83528201526012602482015271105b1c9958591e481c9959da5cdd195c995960721b6044820152fd5b6020606492519162461bcd60e51b8352820152600d60248201526c5374616b6520746f6f206c6f7760981b6044820152fd5b50903461011e578160031936011261011e576106de61078a565b60025460243593916001600160a01b03916106fc908316331461082f565b169283855284602052818520805491821561071781156107f2565b8184029184830414171561077757612710900493848303928311610764575055519081527fe79f13b65221379a51e8a5c792156c78a9c014eb4ddae1ec990ae85ac25351af90602090a280f35b634e487b7160e01b875260119052602486fd5b634e487b7160e01b875260118552602487fd5b600435906001600160a01b03821682036107a057565b600080fd5b6001548110156107dc5760016000527fb10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf60190600090565b634e487b7160e01b600052603260045260246000fd5b156107f957565b60405162461bcd60e51b815260206004820152600e60248201526d139bdd081c9959da5cdd195c995960921b6044820152606490fd5b1561083657565b60405162461bcd60e51b815260206004820152600b60248201526a4f6e6c7920657363726f7760a81b6044820152606490fdfea2646970667358221220078780376831ad54ed5f49996062cc5d9185393a0907819bb3c2f0b3322542e264736f6c63430008140033",
+  "deployedBytecode": "0x60406080815260048036101561001457600080fd5b600091823560e01c806302fb4d85146106c45780631aa3a008146105485780632ce962cf146104e25780633ccfd60b1461029657806366e305fd1461023a5780638e230e6f1461020f578063a0385450146101d6578063cb1c2b5c146101b4578063dca5f6b01461016e578063e125523a1461014f578063e42a96e7146101225763f42375b5146100a457600080fd5b3461011e57602036600319011261011e576100bd61078a565b600254926001600160a01b03928385166100ed57505016906bffffffffffffffffffffffff60a01b161760025580f35b906020606492519162461bcd60e51b8352820152600b60248201526a105b1c9958591e481cd95d60aa1b6044820152fd5b8280fd5b83823461014b578160031936011261014b5760025490516001600160a01b039091168152602090f35b5080fd5b83823461014b578160031936011261014b576020906001549051908152f35b83823461014b57602036600319011261014b579081906001600160a01b0361019461078a565b168152806020522060ff6001825492015416825191825215156020820152f35b83823461014b578160031936011261014b5760209051662386f26fc100008152f35b50823461020c57602036600319011261020c57506101f6602092356107a5565b905491519160018060a01b039160031b1c168152f35b80fd5b50903461011e57602036600319011261011e57359160015483101561020c57506101f66020926107a5565b83823461014b57602036600319011261014b5760209181906001600160a01b0361026261078a565b1681528084522090662386f26fc10000825410159182610286575b50519015158152f35b6001015460ff161591508361027d565b503461011e578260031936011261011e5733835282602052808320918254926102c08415156107f2565b60019060ff82820154166104ad5785905584815b6103b6575b50508380808086335af13d156103b15767ffffffffffffffff3d81811161039e57845191601f8201601f19908116603f011683019081118382101761038b57855281528560203d92013e5b156103575750519081527fb1a732a1a3ef1f32bbba697c21c2f40e16e057be0200c8169e378772d5f3b4c260203392a280f35b6020606492519162461bcd60e51b8352820152600f60248201526e151c985b9cd9995c8819985a5b1959608a1b6044820152fd5b634e487b7160e01b885260418552602488fd5b634e487b7160e01b875260418452602487fd5b610324565b8154808210156104a7576103c9826107a5565b90546003926001600160a01b0392909190841b1c8216331461040c5750505060001981146103f9578101816102d4565b634e487b7160e01b865260118352602486fd5b9091939260001991828101908111610494579061043c8461042f61045b946107a5565b905490891b1c16916107a5565b90919082549060031b9160018060a01b03809116831b921b1916179055565b8254801561048157019261046e846107a5565b81939154921b1b191690555538806102d9565b634e487b7160e01b895260318652602489fd5b634e487b7160e01b8a526011875260248afd5b506102d9565b835162461bcd60e51b8152602081850152600f60248201526e48617320616374697665207461736b60881b6044820152606490fd5b83823461014b578060031936011261014b576104fc61078a565b6024359081151582036105445761054192600191828060a01b03906105268260025416331461082f565b168552846020528420019060ff801983541691151516179055565b80f35b8380fd5b50908260031936011261011e57662386f26fc10000341061069257338352826020528183205461065b57815182810181811067ffffffffffffffff82111761064857906105c1918452348152600160208201868152338752866020528587209251835551151591019060ff801983541691151516179055565b600154906801000000000000000082101561063557506105ea81600161060893016001556107a5565b81546001600160a01b0360039290921b91821b19163390911b179055565b513481527f302e82b0b7908cfac0232eeb6a83332cbf587d0cb58eaa7ba72f884c149910fa60203392a280f35b634e487b7160e01b845260419052602483fd5b634e487b7160e01b855260418352602485fd5b6020606492519162461bcd60e51b83528201526012602482015271105b1c9958591e481c9959da5cdd195c995960721b6044820152fd5b6020606492519162461bcd60e51b8352820152600d60248201526c5374616b6520746f6f206c6f7760981b6044820152fd5b50903461011e578160031936011261011e576106de61078a565b60025460243593916001600160a01b03916106fc908316331461082f565b169283855284602052818520805491821561071781156107f2565b8184029184830414171561077757612710900493848303928311610764575055519081527fe79f13b65221379a51e8a5c792156c78a9c014eb4ddae1ec990ae85ac25351af90602090a280f35b634e487b7160e01b875260119052602486fd5b634e487b7160e01b875260118552602487fd5b600435906001600160a01b03821682036107a057565b600080fd5b6001548110156107dc5760016000527fb10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf60190600090565b634e487b7160e01b600052603260045260246000fd5b156107f957565b60405162461bcd60e51b815260206004820152600e60248201526d139bdd081c9959da5cdd195c995960921b6044820152606490fd5b1561083657565b60405162461bcd60e51b815260206004820152600b60248201526a4f6e6c7920657363726f7760a81b6044820152606490fdfea2646970667358221220078780376831ad54ed5f49996062cc5d9185393a0907819bb3c2f0b3322542e264736f6c63430008140033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "title": "JuryRegistry - Jury 注册、Stake 和 Slash 管理",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "getJuror(uint256)": {
+        "notice": "获取 Jury 地址"
+      },
+      "getJurorCount()": {
+        "notice": "获取已注册 Jury 总数"
+      },
+      "isEligible(address)": {
+        "notice": "检查是否已注册且有足够 stake"
+      },
+      "register()": {
+        "notice": "Jury 注册并质押"
+      },
+      "setActive(address,bool)": {
+        "notice": "ArbiterEscrow 调用：设置 Jury 活跃状态"
+      },
+      "setEscrowContract(address)": {
+        "notice": "设置 ArbiterEscrow 合约地址（部署后调用一次）"
+      },
+      "slash(address,uint256)": {
+        "notice": "ArbiterEscrow 调用：slash Jury stake"
+      },
+      "withdraw()": {
+        "notice": "无活跃任务时取回 stake"
+      }
+    },
+    "notice": "Jury Agent 需质押保证金参与评审，违规行为将被 slash",
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 1477,
+        "contract": "contracts/JuryRegistry.sol:JuryRegistry",
+        "label": "jurors",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_mapping(t_address,t_struct(Juror)1472_storage)"
+      },
+      {
+        "astId": 1480,
+        "contract": "contracts/JuryRegistry.sol:JuryRegistry",
+        "label": "jurorList",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_array(t_address)dyn_storage"
+      },
+      {
+        "astId": 1482,
+        "contract": "contracts/JuryRegistry.sol:JuryRegistry",
+        "label": "escrowContract",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_address"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_array(t_address)dyn_storage": {
+        "base": "t_address",
+        "encoding": "dynamic_array",
+        "label": "address[]",
+        "numberOfBytes": "32"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_mapping(t_address,t_struct(Juror)1472_storage)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => struct JuryRegistry.Juror)",
+        "numberOfBytes": "32",
+        "value": "t_struct(Juror)1472_storage"
+      },
+      "t_struct(Juror)1472_storage": {
+        "encoding": "inplace",
+        "label": "struct JuryRegistry.Juror",
+        "members": [
+          {
+            "astId": 1469,
+            "contract": "contracts/JuryRegistry.sol:JuryRegistry",
+            "label": "stake",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 1471,
+            "contract": "contracts/JuryRegistry.sol:JuryRegistry",
+            "label": "active",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_bool"
+          }
+        ],
+        "numberOfBytes": "64"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}

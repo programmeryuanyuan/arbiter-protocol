@@ -337,22 +337,30 @@ contract ArbiterEscrow {
     function _selectJury(uint256 taskId) internal {
         Task storage t = tasks[taskId];
         uint256 total = juryRegistry.getJurorCount();
-        require(total >= t.juryCount, "Not enough jurors");
 
-        uint256 selected;
+        // Collect all eligible jurors first
+        address[] memory eligible = new address[](total);
+        uint256 count = 0;
+        for (uint256 i = 0; i < total; i++) {
+            address juror = juryRegistry.getJuror(i);
+            if (juryRegistry.isEligible(juror)) {
+                eligible[count++] = juror;
+            }
+        }
+        require(count >= t.juryCount, "Not enough eligible jurors");
+
+        // Fisher-Yates shuffle: swap first juryCount positions
         uint256 seed = uint256(
             keccak256(abi.encodePacked(block.timestamp, block.prevrandao, taskId))
         );
+        for (uint256 i = 0; i < t.juryCount; i++) {
+            uint256 j = i + uint256(keccak256(abi.encodePacked(seed, i))) % (count - i);
+            (eligible[i], eligible[j]) = (eligible[j], eligible[i]);
+        }
 
-        for (uint256 i = 0; selected < t.juryCount && i < total * 3; i++) {
-            uint256 idx = uint256(keccak256(abi.encodePacked(seed, i))) % total;
-            address juror = juryRegistry.getJuror(idx);
-
-            // 跳过已选中或不可用的
-            if (juryIndex[taskId][juror] > 0 || !juryRegistry.isEligible(juror)) {
-                continue;
-            }
-
+        // Assign first juryCount jurors
+        for (uint256 i = 0; i < t.juryCount; i++) {
+            address juror = eligible[i];
             juryRecords[taskId].push(
                 JuryRecord({
                     juror: juror,
@@ -364,10 +372,7 @@ contract ArbiterEscrow {
             );
             juryIndex[taskId][juror] = juryRecords[taskId].length; // 1-based
             juryRegistry.setActive(juror, true);
-            selected++;
         }
-
-        require(selected == t.juryCount, "Jury selection failed");
     }
 
     function _transferTo(address to, uint256 amount) internal {
