@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { parseEther, keccak256, toUtf8Bytes } from "viem";
+import { parseEther, keccak256, stringToHex } from "viem";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 export default function CreateTaskButton() {
@@ -26,7 +26,7 @@ export default function CreateTaskButton() {
     }
 
     const deadline = Math.floor(Date.now() / 1000) + 3600;
-    const fieldListHash = keccak256(toUtf8Bytes("fields"));
+    const fieldListHash = keccak256(stringToHex("fields"));
 
     try {
       const escrow = parseEther(escrowAmount);

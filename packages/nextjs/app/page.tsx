@@ -78,10 +78,11 @@ const Home: NextPage = () => {
   const { targetNetwork } = useTargetNetwork();
   const [taskId, setTaskId] = useState<number>(0);
 
-  // 1. 读取总任务数
+  // 1. 读取总任务数（关闭轮询，靠事件刷新）
   const { data: taskCount, refetch: refetchTaskCount } = useScaffoldReadContract({
     contractName: "ArbiterEscrow",
     functionName: "taskCount",
+    watch: false,
   });
 
   // 自动选择最新任务
@@ -97,6 +98,7 @@ const Home: NextPage = () => {
     functionName: "getTask",
     args: [BigInt(taskId)],
     enabled: taskCount !== undefined && taskCount > 0n,
+    watch: false,
   });
 
   // 3. 读取 Jury 记录
@@ -105,6 +107,7 @@ const Home: NextPage = () => {
     functionName: "getJuryRecords",
     args: [BigInt(taskId)],
     enabled: taskCount !== undefined && taskCount > 0n,
+    watch: false,
   });
 
   // 通用刷新函数
