@@ -27,11 +27,11 @@ const config: HardhatUserConfig = {
   solidity: {
     compilers: [
       {
-        version: '0.8.30',
+        version: '0.8.20',
         settings: {
+          viaIR: true,
           optimizer: {
             enabled: true,
-            // https://docs.soliditylang.org/en/latest/using-the-compiler.html#optimizer-options
             runs: 200
           }
         }
@@ -158,6 +158,12 @@ const config: HardhatUserConfig = {
     },
     celoSepolia: {
       url: 'https://forno.celo-sepolia.celo-testnet.org/',
+      accounts: [
+        deployerPrivateKey
+      ]
+    },
+    monad_testnet: {
+      url: 'https://testnet-rpc.monad.xyz',
       accounts: [
         deployerPrivateKey
       ]
