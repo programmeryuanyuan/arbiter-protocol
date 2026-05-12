@@ -814,7 +814,48 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 15,
+      deployedOnBlock: 45102,
+    },
+    Groth16Verifier: {
+      address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "uint256[2]",
+              name: "_pA",
+              type: "uint256[2]",
+            },
+            {
+              internalType: "uint256[2][2]",
+              name: "_pB",
+              type: "uint256[2][2]",
+            },
+            {
+              internalType: "uint256[2]",
+              name: "_pC",
+              type: "uint256[2]",
+            },
+            {
+              internalType: "uint256[3]",
+              name: "_pubSignals",
+              type: "uint256[3]",
+            },
+          ],
+          name: "verifyProof",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 45100,
     },
     JuryRegistry: {
       address: "0x0165878A594ca255338adfa4d48449f69242Eb8F",
@@ -1066,48 +1107,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 13,
-    },
-    MockVerifier: {
-      address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
-      abi: [
-        {
-          inputs: [
-            {
-              internalType: "uint256[2]",
-              name: "",
-              type: "uint256[2]",
-            },
-            {
-              internalType: "uint256[2][2]",
-              name: "",
-              type: "uint256[2][2]",
-            },
-            {
-              internalType: "uint256[2]",
-              name: "",
-              type: "uint256[2]",
-            },
-            {
-              internalType: "uint256[3]",
-              name: "",
-              type: "uint256[3]",
-            },
-          ],
-          name: "verifyProof",
-          outputs: [
-            {
-              internalType: "bool",
-              name: "",
-              type: "bool",
-            },
-          ],
-          stateMutability: "pure",
-          type: "function",
-        },
-      ],
-      inheritedFunctions: {},
-      deployedOnBlock: 11,
+      deployedOnBlock: 45101,
     },
     YourContract: {
       address: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
@@ -1251,7 +1251,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 9,
+      deployedOnBlock: 45099,
     },
   },
 } as const;
