@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 /// @title JuryRegistry - Jury 注册、Stake 和 Slash 管理
 /// @notice Jury Agent 需质押保证金参与评审，违规行为将被 slash
 contract JuryRegistry {
-    uint256 public constant MIN_STAKE = 0.01 ether;
+    uint256 public constant MIN_STAKE = 0.001 ether;
 
     struct Juror {
         uint256 stake;

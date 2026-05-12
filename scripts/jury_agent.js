@@ -77,7 +77,7 @@ async function llmScore(subjectiveCriteria, resultContent) {
 }
 
 // ── Jury 注册 ─────────────────────────────────────────────────
-export async function registerJuror(privateKey, stakeAmount = "0.01") {
+export async function registerJuror(privateKey, stakeAmount = "0.001") {
   const clients = createClients(privateKey);
 
   console.log(`[Jury ${clients.account.address.slice(0, 8)}] 注册中...`);

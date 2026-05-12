@@ -33,8 +33,8 @@ export async function createTask({
   minScore = 70,
   juryCount = 3,
   deadlineSeconds = 3600,
-  escrowAmount = "0.05",
-  juryRewardAmount = "0.002", // 每个 Jury 的固定报酬
+  escrowAmount = "0.005",
+  juryRewardAmount = "0.0002", // 每个 Jury 的固定报酬
 }) {
   // 字段列表哈希
   const fieldListHash = keccak256(toBytes(JSON.stringify(requiredFields)));
