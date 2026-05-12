@@ -153,7 +153,7 @@ export async function judgeTask(taskId, privateKey) {
   };
 }
 
-// ── 等待所有 Jury commit（轮询方式）──────────────────────────
+// ── 等待所有 Jury commit（轮询 records，无共享计数器依赖）──────
 export async function waitForAllCommits(taskId, expectedCount) {
   const transport = http(RPC_URL);
   const publicClient = createPublicClient({ transport });
@@ -161,20 +161,73 @@ export async function waitForAllCommits(taskId, expectedCount) {
   console.log(`[Jury] 等待所有 ${expectedCount} 个 Jury commit...`);
 
   while (true) {
-    const task = await publicClient.readContract({
+    const records = await publicClient.readContract({
       address: ESCROW_ADDRESS,
       abi: escrowAbi,
-      functionName: "getTask",
+      functionName: "getJuryRecords",
       args: [BigInt(taskId)],
     });
 
-    if (task.juryCommitted >= BigInt(expectedCount)) {
-      console.log("[Jury] 所有 Jury 已 commit，开始 reveal");
+    const committed = records.filter(r => r.committed).length;
+    if (committed >= expectedCount) {
+      console.log("[Jury] 所有 Jury 已 commit");
       break;
     }
 
-    await new Promise((r) => setTimeout(r, 1000)); // 每秒检查
+    await new Promise((r) => setTimeout(r, 1000));
   }
+}
+
+// ── 推进到 reveal 阶段（permissionless 聚合步骤）────────────────
+export async function advanceToReveal(taskId, privateKey) {
+  const clients = createClients(privateKey);
+  console.log(`[Jury] advanceToReveal taskId=${taskId}...`);
+
+  const hash = await clients.wallet.writeContract({
+    address: ESCROW_ADDRESS,
+    abi: escrowAbi,
+    functionName: "advanceToReveal",
+    args: [BigInt(taskId)],
+    gas: 200_000n,
+  });
+  await clients.public.waitForTransactionReceipt({ hash });
+  console.log("[Jury] reveal 阶段已开启");
+}
+
+// ── 等待所有 Jury reveal 并触发结算 ──────────────────────────────
+export async function waitAndFinalize(taskId, expectedCount, privateKey) {
+  const transport = http(RPC_URL);
+  const publicClient = createPublicClient({ transport });
+
+  console.log(`[Jury] 等待所有 ${expectedCount} 个 Jury reveal...`);
+
+  while (true) {
+    const records = await publicClient.readContract({
+      address: ESCROW_ADDRESS,
+      abi: escrowAbi,
+      functionName: "getJuryRecords",
+      args: [BigInt(taskId)],
+    });
+
+    const revealed = records.filter(r => r.revealed).length;
+    if (revealed >= expectedCount) {
+      console.log("[Jury] 所有 Jury 已 reveal，触发结算...");
+      break;
+    }
+
+    await new Promise((r) => setTimeout(r, 1000));
+  }
+
+  const clients = createClients(privateKey);
+  const hash = await clients.wallet.writeContract({
+    address: ESCROW_ADDRESS,
+    abi: escrowAbi,
+    functionName: "finalizeTask",
+    args: [BigInt(taskId)],
+    gas: 300_000n,
+  });
+  await clients.public.waitForTransactionReceipt({ hash });
+  console.log("[Jury] 结算完成");
 }
 
 // ── 批量注册多个 Jury（Demo 用）──────────────────────────────

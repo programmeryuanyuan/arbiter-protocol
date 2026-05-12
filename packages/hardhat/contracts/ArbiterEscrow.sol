@@ -171,44 +171,59 @@ contract ArbiterEscrow {
         emit ZKPassed(taskId, resultURI);
     }
 
-    // ── Jury：Commit 评分哈希 ─────────────────────────────────
+    // ── Jury：Commit 评分哈希（仅写自己的记录，无共享状态）─────
     function commitScore(uint256 taskId, bytes32 scoreHash) external {
         Task storage t = tasks[taskId];
-        require(
-            t.status == Status.ZKPassed || t.status == Status.Deliberating,
-            "Not in jury phase"
-        );
+        require(t.status == Status.ZKPassed, "Not in commit phase");
         require(block.timestamp <= t.commitDeadline, "Commit window closed");
 
         uint256 idx = juryIndex[taskId][msg.sender];
         require(idx > 0, "Not assigned jury");
-        idx--; // 转为 0-based
+        idx--;
 
         JuryRecord storage rec = juryRecords[taskId][idx];
         require(!rec.committed, "Already committed");
 
         rec.scoreHash = scoreHash;
         rec.committed = true;
-        t.juryCommitted++;
-
-        if (t.status == Status.ZKPassed) {
-            t.status = Status.Deliberating;
-        }
-
-        // 全部 commit 后设置 reveal deadline
-        if (t.juryCommitted == t.juryCount) {
-            t.revealDeadline = block.timestamp + REVEAL_WINDOW;
-        }
 
         emit ScoreCommitted(taskId, msg.sender);
     }
 
-    // ── Jury：Reveal 真实评分 ─────────────────────────────────
-    function revealScore(
-        uint256 taskId,
-        uint256 score,
-        bytes32 salt
-    ) external {
+    // ── 任意人：聚合 commit 结果，推进到 reveal 阶段 ────────────
+    // 条件：全部 Jury 已 commit，或 commit 窗口已关闭
+    function advanceToReveal(uint256 taskId) public {
+        Task storage t = tasks[taskId];
+        require(t.status == Status.ZKPassed, "Not in commit phase");
+        require(t.commitDeadline > 0, "Commit phase not started");
+
+        JuryRecord[] storage records = juryRecords[taskId];
+        uint256 committed = 0;
+        bool allCommitted = true;
+        for (uint256 i = 0; i < records.length; i++) {
+            if (records[i].committed) {
+                committed++;
+            } else {
+                allCommitted = false;
+            }
+        }
+        require(allCommitted || block.timestamp > t.commitDeadline, "Commit phase ongoing");
+
+        if (committed == 0) {
+            t.status = Status.Resolved;
+            _transferTo(t.payer, t.escrow);
+            emit TaskResolved(taskId, 0, false, t.payer);
+            return;
+        }
+
+        t.juryCommitted = committed;
+        t.juryCount = committed;
+        t.revealDeadline = block.timestamp + REVEAL_WINDOW;
+        t.status = Status.Deliberating;
+    }
+
+    // ── Jury：Reveal 真实评分（仅写自己的记录，无共享状态）──────
+    function revealScore(uint256 taskId, uint256 score, bytes32 salt) external {
         Task storage t = tasks[taskId];
         require(t.status == Status.Deliberating, "Not deliberating");
         require(t.revealDeadline > 0, "Reveal not started");
@@ -222,8 +237,6 @@ contract ArbiterEscrow {
         JuryRecord storage rec = juryRecords[taskId][idx];
         require(rec.committed, "Not committed");
         require(!rec.revealed, "Already revealed");
-
-        // 验证 hash
         require(
             rec.scoreHash == keccak256(abi.encodePacked(score, salt)),
             "Hash mismatch"
@@ -231,14 +244,49 @@ contract ArbiterEscrow {
 
         rec.score = score;
         rec.revealed = true;
-        t.juryRevealed++;
 
         emit ScoreRevealed(taskId, msg.sender, score);
+    }
 
-        // 全部 reveal 后自动结算
-        if (t.juryRevealed == t.juryCount) {
-            _settle(taskId);
+    // ── 任意人：聚合 reveal 结果，执行结算 ──────────────────────
+    // 条件：所有已 commit 的 Jury 均已 reveal，或 reveal 窗口已关闭
+    function finalizeTask(uint256 taskId) public {
+        Task storage t = tasks[taskId];
+        require(t.status == Status.Deliberating, "Not deliberating");
+        require(t.revealDeadline > 0, "Reveal not started");
+
+        JuryRecord[] storage records = juryRecords[taskId];
+        uint256 revealed = 0;
+        bool allRevealed = true;
+        for (uint256 i = 0; i < records.length; i++) {
+            if (records[i].committed) {
+                if (records[i].revealed) {
+                    revealed++;
+                } else {
+                    allRevealed = false;
+                }
+            }
         }
+        require(allRevealed || block.timestamp > t.revealDeadline, "Reveal phase ongoing");
+
+        if (!allRevealed) {
+            for (uint256 i = 0; i < records.length; i++) {
+                if (records[i].committed && !records[i].revealed) {
+                    juryRegistry.slash(records[i].juror, SLASH_NO_REVEAL_BPS);
+                }
+            }
+        }
+
+        t.juryRevealed = revealed;
+
+        if (revealed == 0) {
+            t.status = Status.Resolved;
+            _transferTo(t.payer, t.escrow);
+            emit TaskResolved(taskId, 0, false, t.payer);
+            return;
+        }
+
+        _settle(taskId);
     }
 
     // ── 超时保护 ──────────────────────────────────────────────
@@ -257,49 +305,15 @@ contract ArbiterEscrow {
             return;
         }
 
-        // 场景 2: commitDeadline 过了，部分 Jury 未 commit
-        if (
-            (t.status == Status.ZKPassed || t.status == Status.Deliberating) &&
-            t.commitDeadline > 0 &&
-            block.timestamp > t.commitDeadline &&
-            t.juryCommitted < t.juryCount
-        ) {
-            // 用已 commit 的继续，设置 reveal deadline
-            if (t.juryCommitted > 0) {
-                t.juryCount = t.juryCommitted; // 缩减到已 commit 数
-                t.revealDeadline = block.timestamp + REVEAL_WINDOW;
-                t.status = Status.Deliberating;
-            } else {
-                // 无人 commit，退款
-                t.status = Status.Resolved;
-                _transferTo(t.payer, t.escrow);
-                emit TaskResolved(taskId, 0, false, t.payer);
-            }
+        // 场景 2: commit 窗口关闭 → 委托 advanceToReveal
+        if (t.status == Status.ZKPassed && t.commitDeadline > 0 && block.timestamp > t.commitDeadline) {
+            advanceToReveal(taskId);
             return;
         }
 
-        // 场景 3: revealDeadline 过了，部分 Jury 未 reveal
-        if (
-            t.status == Status.Deliberating &&
-            t.revealDeadline > 0 &&
-            block.timestamp > t.revealDeadline &&
-            t.juryRevealed < t.juryCount
-        ) {
-            // Slash 未 reveal 的 Jury
-            JuryRecord[] storage records = juryRecords[taskId];
-            for (uint256 i = 0; i < records.length; i++) {
-                if (records[i].committed && !records[i].revealed) {
-                    juryRegistry.slash(records[i].juror, SLASH_NO_REVEAL_BPS);
-                }
-            }
-
-            if (t.juryRevealed > 0) {
-                _settle(taskId);
-            } else {
-                t.status = Status.Resolved;
-                _transferTo(t.payer, t.escrow);
-                emit TaskResolved(taskId, 0, false, t.payer);
-            }
+        // 场景 3: reveal 窗口关闭 → 委托 finalizeTask
+        if (t.status == Status.Deliberating && t.revealDeadline > 0 && block.timestamp > t.revealDeadline) {
+            finalizeTask(taskId);
             return;
         }
 

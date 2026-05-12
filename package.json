@@ -58,6 +58,7 @@
     "node": ">=20.18.3"
   },
   "dependencies": {
-    "circomlib": "^2.0.5"
+    "circomlib": "^2.0.5",
+    "circomlibjs": "^0.1.7"
   }
 }
