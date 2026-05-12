@@ -7,9 +7,13 @@ import { Address } from "@scaffold-ui/components";
 import type { NextPage } from "next";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
+import { useScaffoldWatchContractEvent } from "~~/hooks/scaffold-eth";
 import CreateTaskButton from "~~/components/CreateTaskButton";
 import AcceptTaskButton from "~~/components/AcceptTaskButton";
 import JuryRegisterButton from "~~/components/JuryRegisterButton";
+import SubmitResultButton from "~~/components/SubmitResultButton";
+import CommitScoreButton from "~~/components/CommitScoreButton";
+import RevealScoreButton from "~~/components/RevealScoreButton";
 
 // ========== 状态配置 ==========
 const STATUS_STEPS = [
@@ -75,7 +79,7 @@ const Home: NextPage = () => {
   const [taskId, setTaskId] = useState<number>(0);
 
   // 1. 读取总任务数
-  const { data: taskCount } = useScaffoldReadContract({
+  const { data: taskCount, refetch: refetchTaskCount } = useScaffoldReadContract({
     contractName: "ArbiterEscrow",
     functionName: "taskCount",
   });
@@ -88,7 +92,7 @@ const Home: NextPage = () => {
   }, [taskCount, taskId]);
 
   // 2. 读取任务详情
-  const { data: taskData, isLoading: taskLoading } = useScaffoldReadContract({
+  const { data: taskData, isLoading: taskLoading, refetch: refetchTask } = useScaffoldReadContract({
     contractName: "ArbiterEscrow",
     functionName: "getTask",
     args: [BigInt(taskId)],
@@ -96,11 +100,50 @@ const Home: NextPage = () => {
   });
 
   // 3. 读取 Jury 记录
-  const { data: juryRecords } = useScaffoldReadContract({
+  const { data: juryRecords, refetch: refetchJury } = useScaffoldReadContract({
     contractName: "ArbiterEscrow",
     functionName: "getJuryRecords",
     args: [BigInt(taskId)],
     enabled: taskCount !== undefined && taskCount > 0n,
+  });
+
+  // 通用刷新函数
+  const refreshAll = () => {
+    refetchTaskCount();
+    refetchTask();
+    refetchJury();
+  };
+
+  // 监听合约事件，实时刷新
+  useScaffoldWatchContractEvent({
+    contractName: "ArbiterEscrow",
+    eventName: "TaskCreated",
+    onLogs: refreshAll,
+  });
+  useScaffoldWatchContractEvent({
+    contractName: "ArbiterEscrow",
+    eventName: "TaskAccepted",
+    onLogs: refreshAll,
+  });
+  useScaffoldWatchContractEvent({
+    contractName: "ArbiterEscrow",
+    eventName: "ZKPassed",
+    onLogs: refreshAll,
+  });
+  useScaffoldWatchContractEvent({
+    contractName: "ArbiterEscrow",
+    eventName: "ScoreCommitted",
+    onLogs: refreshAll,
+  });
+  useScaffoldWatchContractEvent({
+    contractName: "ArbiterEscrow",
+    eventName: "ScoreRevealed",
+    onLogs: refreshAll,
+  });
+  useScaffoldWatchContractEvent({
+    contractName: "ArbiterEscrow",
+    eventName: "TaskResolved",
+    onLogs: refreshAll,
   });
 
   // 数据转换
@@ -262,6 +305,15 @@ const Home: NextPage = () => {
           <JuryRegisterButton />
           {statusName === "Created" && (
             <AcceptTaskButton taskId={taskId} />
+          )}
+          {statusName === "Accepted" && (
+            <SubmitResultButton taskId={taskId} />
+          )}
+          {(statusName === "ZKPassed" || statusName === "Deliberating") && (
+            <>
+              <CommitScoreButton taskId={taskId} />
+              <RevealScoreButton taskId={taskId} />
+            </>
           )}
         </div>
 
