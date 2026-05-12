@@ -10,6 +10,7 @@ export default function CreateTaskButton() {
   const [minScore, setMinScore] = useState(70);
   const [juryCount, setJuryCount] = useState(3);
   const [escrowAmount, setEscrowAmount] = useState("0.05");
+  const [juryReward, setJuryReward] = useState("0.005");
   const [minLength, setMinLength] = useState(500);
   const [minFieldCount, setMinFieldCount] = useState(3);
   const [subjectiveCriteria, setSubjectiveCriteria] = useState("analysis quality and depth");
@@ -28,6 +29,10 @@ export default function CreateTaskButton() {
     const fieldListHash = keccak256(toUtf8Bytes("fields"));
 
     try {
+      const escrow = parseEther(escrowAmount);
+      const reward = parseEther(juryReward);
+      const totalValue = escrow + reward * BigInt(juryCount);
+
       await writeContractAsync({
         functionName: "createTask",
         args: [
@@ -37,8 +42,9 @@ export default function CreateTaskButton() {
           BigInt(minScore),
           BigInt(juryCount),
           BigInt(deadline),
+          reward,
         ],
-        value: parseEther(escrowAmount),
+        value: totalValue,
       });
       setShowModal(false);
     } catch (err) {
@@ -105,14 +111,24 @@ export default function CreateTaskButton() {
                   />
                 </div>
                 <div>
-                  <label className="label-text text-sm">Min Length</label>
+                  <label className="label-text text-sm">Jury Reward (MON)</label>
                   <input
-                    type="number"
+                    type="text"
                     className="input input-bordered input-sm w-full"
-                    value={minLength}
-                    onChange={e => setMinLength(Number(e.target.value))}
+                    value={juryReward}
+                    onChange={e => setJuryReward(e.target.value)}
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="label-text text-sm">Min Length</label>
+                <input
+                  type="number"
+                  className="input input-bordered input-sm w-full"
+                  value={minLength}
+                  onChange={e => setMinLength(Number(e.target.value))}
+                />
               </div>
 
               <div>
