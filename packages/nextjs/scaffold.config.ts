@@ -29,7 +29,7 @@ export const DEFAULT_ALCHEMY_API_KEY = "cR4WnXePioePZ5fFrnSiR";
 
 const scaffoldConfig = {
   // The networks on which your DApp is live
-  targetNetworks: [monadTestnet, chains.hardhat],
+  targetNetworks: [chains.hardhat, monadTestnet],
   // Monad is an L2-like chain — lower polling interval for faster feedback
   pollingInterval: 1000,
   // This is ours Alchemy's default API key.
