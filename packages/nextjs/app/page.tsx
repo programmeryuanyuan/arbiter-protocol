@@ -7,6 +7,7 @@ import { Address } from "@scaffold-ui/components";
 import type { NextPage } from "next";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
+import CreateTaskButton from "~~/components/CreateTaskButton";
 
 // ========== 状态配置 ==========
 const STATUS_STEPS = [
@@ -225,6 +226,8 @@ const Home: NextPage = () => {
                   {taskData ? Number(taskData.minScore) : "--"}/100
                 </span>
               </div>
+              <div className="divider divider-horizontal hidden sm:flex"></div>
+              <CreateTaskButton />
             </div>
           </div>
         </div>
