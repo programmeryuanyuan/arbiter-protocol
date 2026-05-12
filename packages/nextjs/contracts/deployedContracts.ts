@@ -4,6 +4,1256 @@
  */
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
-const deployedContracts = {} as const;
+const deployedContracts = {
+  31337: {
+    ArbiterEscrow: {
+      address: "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_verifier",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "_juryRegistry",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "taskId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "juror",
+              type: "address",
+            },
+          ],
+          name: "ScoreCommitted",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "taskId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "juror",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "score",
+              type: "uint256",
+            },
+          ],
+          name: "ScoreRevealed",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "taskId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "worker",
+              type: "address",
+            },
+          ],
+          name: "TaskAccepted",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "taskId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "payer",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "worker",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "escrow",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "minScore",
+              type: "uint256",
+            },
+          ],
+          name: "TaskCreated",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "taskId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "finalScore",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "bool",
+              name: "passed",
+              type: "bool",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "recipient",
+              type: "address",
+            },
+          ],
+          name: "TaskResolved",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "taskId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "resultURI",
+              type: "string",
+            },
+          ],
+          name: "ZKPassed",
+          type: "event",
+        },
+        {
+          inputs: [],
+          name: "COMMIT_WINDOW",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "MAX_DEVIATION",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "REVEAL_WINDOW",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "SLASH_DEVIATION_BPS",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "SLASH_NO_REVEAL_BPS",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "taskId",
+              type: "uint256",
+            },
+          ],
+          name: "acceptTask",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "taskId",
+              type: "uint256",
+            },
+          ],
+          name: "claimTimeout",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "taskId",
+              type: "uint256",
+            },
+            {
+              internalType: "bytes32",
+              name: "scoreHash",
+              type: "bytes32",
+            },
+          ],
+          name: "commitScore",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "worker",
+              type: "address",
+            },
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "minLength",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "minFieldCount",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bytes32",
+                  name: "fieldListHash",
+                  type: "bytes32",
+                },
+              ],
+              internalType: "struct ArbiterEscrow.ObjectiveCriteria",
+              name: "objective",
+              type: "tuple",
+            },
+            {
+              internalType: "string",
+              name: "subjectiveCriteria",
+              type: "string",
+            },
+            {
+              internalType: "uint256",
+              name: "minScore",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "juryCount",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "deadline",
+              type: "uint256",
+            },
+          ],
+          name: "createTask",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "taskId",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "taskId",
+              type: "uint256",
+            },
+          ],
+          name: "getAssignedJurors",
+          outputs: [
+            {
+              internalType: "address[]",
+              name: "",
+              type: "address[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "taskId",
+              type: "uint256",
+            },
+          ],
+          name: "getJuryRecords",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "address",
+                  name: "juror",
+                  type: "address",
+                },
+                {
+                  internalType: "bytes32",
+                  name: "scoreHash",
+                  type: "bytes32",
+                },
+                {
+                  internalType: "uint256",
+                  name: "score",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bool",
+                  name: "committed",
+                  type: "bool",
+                },
+                {
+                  internalType: "bool",
+                  name: "revealed",
+                  type: "bool",
+                },
+              ],
+              internalType: "struct ArbiterEscrow.JuryRecord[]",
+              name: "",
+              type: "tuple[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "taskId",
+              type: "uint256",
+            },
+          ],
+          name: "getTask",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "id",
+                  type: "uint256",
+                },
+                {
+                  internalType: "address",
+                  name: "payer",
+                  type: "address",
+                },
+                {
+                  internalType: "address",
+                  name: "worker",
+                  type: "address",
+                },
+                {
+                  internalType: "uint256",
+                  name: "escrow",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "deadline",
+                  type: "uint256",
+                },
+                {
+                  internalType: "enum ArbiterEscrow.Status",
+                  name: "status",
+                  type: "uint8",
+                },
+                {
+                  components: [
+                    {
+                      internalType: "uint256",
+                      name: "minLength",
+                      type: "uint256",
+                    },
+                    {
+                      internalType: "uint256",
+                      name: "minFieldCount",
+                      type: "uint256",
+                    },
+                    {
+                      internalType: "bytes32",
+                      name: "fieldListHash",
+                      type: "bytes32",
+                    },
+                  ],
+                  internalType: "struct ArbiterEscrow.ObjectiveCriteria",
+                  name: "objective",
+                  type: "tuple",
+                },
+                {
+                  internalType: "string",
+                  name: "subjectiveCriteria",
+                  type: "string",
+                },
+                {
+                  internalType: "uint256",
+                  name: "minScore",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bytes32",
+                  name: "resultCommitment",
+                  type: "bytes32",
+                },
+                {
+                  internalType: "string",
+                  name: "resultURI",
+                  type: "string",
+                },
+                {
+                  internalType: "uint256",
+                  name: "juryCount",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "juryCommitted",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "juryRevealed",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "commitDeadline",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "revealDeadline",
+                  type: "uint256",
+                },
+              ],
+              internalType: "struct ArbiterEscrow.Task",
+              name: "",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "juryIndex",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "juryRecords",
+          outputs: [
+            {
+              internalType: "address",
+              name: "juror",
+              type: "address",
+            },
+            {
+              internalType: "bytes32",
+              name: "scoreHash",
+              type: "bytes32",
+            },
+            {
+              internalType: "uint256",
+              name: "score",
+              type: "uint256",
+            },
+            {
+              internalType: "bool",
+              name: "committed",
+              type: "bool",
+            },
+            {
+              internalType: "bool",
+              name: "revealed",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "juryRegistry",
+          outputs: [
+            {
+              internalType: "contract JuryRegistry",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "taskId",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "score",
+              type: "uint256",
+            },
+            {
+              internalType: "bytes32",
+              name: "salt",
+              type: "bytes32",
+            },
+          ],
+          name: "revealScore",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "taskId",
+              type: "uint256",
+            },
+            {
+              internalType: "bytes32",
+              name: "resultCommitment",
+              type: "bytes32",
+            },
+            {
+              internalType: "string",
+              name: "resultURI",
+              type: "string",
+            },
+            {
+              internalType: "uint256[2]",
+              name: "proofA",
+              type: "uint256[2]",
+            },
+            {
+              internalType: "uint256[2][2]",
+              name: "proofB",
+              type: "uint256[2][2]",
+            },
+            {
+              internalType: "uint256[2]",
+              name: "proofC",
+              type: "uint256[2]",
+            },
+            {
+              internalType: "uint256[3]",
+              name: "publicSignals",
+              type: "uint256[3]",
+            },
+          ],
+          name: "submitResult",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "taskCount",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "tasks",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "id",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "payer",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "worker",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "escrow",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "deadline",
+              type: "uint256",
+            },
+            {
+              internalType: "enum ArbiterEscrow.Status",
+              name: "status",
+              type: "uint8",
+            },
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "minLength",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "minFieldCount",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bytes32",
+                  name: "fieldListHash",
+                  type: "bytes32",
+                },
+              ],
+              internalType: "struct ArbiterEscrow.ObjectiveCriteria",
+              name: "objective",
+              type: "tuple",
+            },
+            {
+              internalType: "string",
+              name: "subjectiveCriteria",
+              type: "string",
+            },
+            {
+              internalType: "uint256",
+              name: "minScore",
+              type: "uint256",
+            },
+            {
+              internalType: "bytes32",
+              name: "resultCommitment",
+              type: "bytes32",
+            },
+            {
+              internalType: "string",
+              name: "resultURI",
+              type: "string",
+            },
+            {
+              internalType: "uint256",
+              name: "juryCount",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "juryCommitted",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "juryRevealed",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "commitDeadline",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "revealDeadline",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "verifier",
+          outputs: [
+            {
+              internalType: "contract IVerifier",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 15,
+    },
+    JuryRegistry: {
+      address: "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+      abi: [
+        {
+          inputs: [],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "juror",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "stake",
+              type: "uint256",
+            },
+          ],
+          name: "JurorRegistered",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "juror",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
+          name: "JurorSlashed",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "juror",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
+          name: "JurorWithdrawn",
+          type: "event",
+        },
+        {
+          inputs: [],
+          name: "MIN_STAKE",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "escrowContract",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "index",
+              type: "uint256",
+            },
+          ],
+          name: "getJuror",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getJurorCount",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "juror",
+              type: "address",
+            },
+          ],
+          name: "isEligible",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "jurorList",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "jurors",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "stake",
+              type: "uint256",
+            },
+            {
+              internalType: "bool",
+              name: "active",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "register",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "juror",
+              type: "address",
+            },
+            {
+              internalType: "bool",
+              name: "_active",
+              type: "bool",
+            },
+          ],
+          name: "setActive",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_escrow",
+              type: "address",
+            },
+          ],
+          name: "setEscrowContract",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "juror",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "bps",
+              type: "uint256",
+            },
+          ],
+          name: "slash",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "withdraw",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 13,
+    },
+    MockVerifier: {
+      address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "uint256[2]",
+              name: "",
+              type: "uint256[2]",
+            },
+            {
+              internalType: "uint256[2][2]",
+              name: "",
+              type: "uint256[2][2]",
+            },
+            {
+              internalType: "uint256[2]",
+              name: "",
+              type: "uint256[2]",
+            },
+            {
+              internalType: "uint256[3]",
+              name: "",
+              type: "uint256[3]",
+            },
+          ],
+          name: "verifyProof",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "pure",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 11,
+    },
+    YourContract: {
+      address: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_owner",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "greetingSetter",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "newGreeting",
+              type: "string",
+            },
+            {
+              indexed: false,
+              internalType: "bool",
+              name: "premium",
+              type: "bool",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "value",
+              type: "uint256",
+            },
+          ],
+          name: "GreetingChange",
+          type: "event",
+        },
+        {
+          inputs: [],
+          name: "greeting",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "premium",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "_newGreeting",
+              type: "string",
+            },
+          ],
+          name: "setGreeting",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "totalCounter",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "userGreetingCounter",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "withdraw",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          stateMutability: "payable",
+          type: "receive",
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 9,
+    },
+  },
+} as const;
 
 export default deployedContracts satisfies GenericContractsDeclaration;

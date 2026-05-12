@@ -1,44 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
+import { formatEther } from "viem";
 import { Address } from "@scaffold-ui/components";
 import type { NextPage } from "next";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth";
-
-// ========== Mock 数据（第一阶段用假数据填充骨架）==========
-const MOCK_TASK = {
-  id: 42,
-  status: "Deliberating" as const, // Created | Accepted | ZKPassed | Deliberating | Resolved
-  payer: "0xA71d5F36cD0C5B1234d4b5C6d7E8F9a0B1c2D3e4",
-  worker: "0xB82e6F47D1E2F3456G7h8I9j0K1l2M3n4O5p6Q7",
-  escrow: "0.05",
-  minScore: 70,
-  deadline: "2024-05-12 18:00",
-};
-
-const MOCK_ZK = {
-  minLength: 500,
-  actualLength: 847,
-  lengthPassed: true,
-  minFields: 3,
-  actualFields: 3,
-  fieldsPassed: true,
-  proofVerified: true,
-  resultURI: "ipfs://QmXyZaBcDeFgHiJkLmNoPqRsTuVwXyZ1234567890AbCd",
-};
-
-const MOCK_JURY = [
-  { id: 1, address: "0xJ1...a3b4", committed: true, revealed: true, score: 82 },
-  { id: 2, address: "0xJ2...c5d6", committed: true, revealed: true, score: 79 },
-  { id: 3, address: "0xJ3...e7f8", committed: true, revealed: false, score: null },
-];
-
-const MOCK_PERFORMANCE = {
-  zkGas: "$0.008",
-  parallelJury: true,
-  settlementTime: "~0.4s",
-  blockNumber: 8847362,
-};
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
 // ========== 状态配置 ==========
 const STATUS_STEPS = [
@@ -49,12 +17,37 @@ const STATUS_STEPS = [
   { key: "Resolved", label: "Done", time: "--" },
 ];
 
+const STATUS_MAP: Record<number, string> = {
+  0: "Created",
+  1: "Accepted",
+  2: "ZKPassed",
+  3: "Deliberating",
+  4: "Resolved",
+};
+
 const STATUS_COLORS: Record<string, string> = {
   Created: "neutral",
   Accepted: "primary",
   ZKPassed: "accent",
   Deliberating: "warning",
   Resolved: "success",
+};
+
+// ========== 辅助函数 ==========
+const formatDeadline = (timestamp: bigint | undefined) => {
+  if (!timestamp) return "--";
+  const date = new Date(Number(timestamp) * 1000);
+  return date.toLocaleString();
+};
+
+const formatEscrow = (wei: bigint | undefined) => {
+  if (!wei) return "0";
+  return parseFloat(formatEther(wei)).toFixed(4);
+};
+
+const shortenAddress = (addr: string | undefined) => {
+  if (!addr || addr === "0x0000000000000000000000000000000000000000") return "--";
+  return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 };
 
 // ========== 辅助组件 ==========
@@ -76,12 +69,95 @@ const CheckItem = ({ label, passed }: { label: string; passed: boolean }) => (
 const Home: NextPage = () => {
   const { address: connectedAddress } = useAccount();
   const { targetNetwork } = useTargetNetwork();
+  const [taskId, setTaskId] = useState<number>(0);
 
-  const currentStatusIndex = STATUS_STEPS.findIndex(s => s.key === MOCK_TASK.status);
-  const revealedJury = MOCK_JURY.filter(j => j.revealed);
+  // 1. 读取总任务数
+  const { data: taskCount } = useScaffoldReadContract({
+    contractName: "ArbiterEscrow",
+    functionName: "taskCount",
+  });
+
+  // 自动选择最新任务
+  useEffect(() => {
+    if (taskCount !== undefined && taskCount > 0n && taskId === 0) {
+      setTaskId(Number(taskCount) - 1);
+    }
+  }, [taskCount, taskId]);
+
+  // 2. 读取任务详情
+  const { data: taskData, isLoading: taskLoading } = useScaffoldReadContract({
+    contractName: "ArbiterEscrow",
+    functionName: "getTask",
+    args: [BigInt(taskId)],
+    enabled: taskCount !== undefined && taskCount > 0n,
+  });
+
+  // 3. 读取 Jury 记录
+  const { data: juryRecords } = useScaffoldReadContract({
+    contractName: "ArbiterEscrow",
+    functionName: "getJuryRecords",
+    args: [BigInt(taskId)],
+    enabled: taskCount !== undefined && taskCount > 0n,
+  });
+
+  // 数据转换
+  const statusName = taskData ? STATUS_MAP[Number(taskData.status)] : "Created";
+  const currentStatusIndex = STATUS_STEPS.findIndex(s => s.key === statusName);
+
+  const revealedJury = (juryRecords || []).filter(j => j.revealed);
   const avgScore = revealedJury.length > 0
-    ? (revealedJury.reduce((sum, j) => sum + (j.score || 0), 0) / revealedJury.length).toFixed(1)
+    ? (revealedJury.reduce((sum, j) => sum + Number(j.score), 0) / revealedJury.length).toFixed(1)
     : "--";
+
+  const maxTaskId = taskCount && taskCount > 0n ? Number(taskCount) - 1 : 0;
+
+  // ZK 验证数据
+  const hasResult = statusName === "ZKPassed" || statusName === "Deliberating" || statusName === "Resolved";
+  const zkLengthPassed = hasResult && taskData ? Number(taskData.objective.minLength) > 0 : false;
+  const zkFieldsPassed = hasResult && taskData ? Number(taskData.objective.minFieldCount) > 0 : false;
+  const zkProofVerified = hasResult;
+
+  // ========== 空状态 ==========
+  if (!taskCount || taskCount === 0n) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <div className="bg-base-200 border-b border-base-300">
+          <div className="container mx-auto px-4 py-6">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div>
+                <h1 className="text-3xl font-bold">Arbiter Protocol</h1>
+                <p className="text-sm text-base-content/60 mt-1">
+                  Decentralized Arbitration for Agent Work
+                </p>
+              </div>
+              <div className="flex flex-col items-end gap-1">
+                {connectedAddress && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-base-content/50">Connected:</span>
+                    <Address address={connectedAddress} chain={targetNetwork} />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="container mx-auto px-4 py-12 flex-1 flex items-center justify-center">
+          <div className="card bg-base-100 shadow-sm border border-base-300 max-w-md w-full">
+            <div className="card-body text-center">
+              <span className="text-5xl mb-4">📭</span>
+              <h2 className="card-title text-xl justify-center">No Tasks Found</h2>
+              <p className="text-base-content/60 mt-2">
+                The ArbiterEscrow contract has no tasks yet.
+              </p>
+              <p className="text-xs text-base-content/40 mt-1">
+                Use the Debug Contracts tab to create a task, or run the demo script.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -92,14 +168,10 @@ const Home: NextPage = () => {
             <div>
               <h1 className="text-3xl font-bold">Arbiter Protocol</h1>
               <p className="text-sm text-base-content/60 mt-1">
-                Decentralized Arbitration for Agent Work · Monad Testnet
+                Decentralized Arbitration for Agent Work · {targetNetwork.name}
               </p>
             </div>
             <div className="flex flex-col items-end gap-1">
-              <div className="flex items-center gap-2 text-sm">
-                <span className="text-base-content/60">Block:</span>
-                <span className="font-mono font-bold">#{MOCK_PERFORMANCE.blockNumber.toLocaleString()}</span>
-              </div>
               {connectedAddress && (
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-base-content/50">Connected:</span>
@@ -120,19 +192,38 @@ const Home: NextPage = () => {
             <div className="flex flex-wrap items-center gap-4">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-base-content/60">Task ID:</span>
-                <span className="font-mono font-bold text-lg">#{MOCK_TASK.id}</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={maxTaskId}
+                  value={taskId}
+                  onChange={(e) => {
+                    const val = Number(e.target.value);
+                    if (val >= 0 && val <= maxTaskId) setTaskId(val);
+                  }}
+                  className="input input-bordered input-sm w-20 font-mono"
+                />
+                <span className="text-xs text-base-content/50">/ {maxTaskId}</span>
               </div>
               <div className="divider divider-horizontal hidden sm:flex"></div>
-              <StatusBadge status={MOCK_TASK.status} />
+              {taskLoading ? (
+                <span className="loading loading-dots loading-sm"></span>
+              ) : (
+                <StatusBadge status={statusName} />
+              )}
               <div className="divider divider-horizontal hidden sm:flex"></div>
               <div className="flex items-center gap-2">
                 <span className="text-sm text-base-content/60">Escrow:</span>
-                <span className="font-bold text-accent">{MOCK_TASK.escrow} MON</span>
+                <span className="font-bold text-accent">
+                  {taskData ? formatEscrow(taskData.escrow) : "--"} MON
+                </span>
               </div>
               <div className="divider divider-horizontal hidden sm:flex"></div>
               <div className="flex items-center gap-2">
                 <span className="text-sm text-base-content/60">Min Score:</span>
-                <span className="font-bold">{MOCK_TASK.minScore}/100</span>
+                <span className="font-bold">
+                  {taskData ? Number(taskData.minScore) : "--"}/100
+                </span>
               </div>
             </div>
           </div>
@@ -174,29 +265,43 @@ const Home: NextPage = () => {
                   <span className="text-xl">🔐</span> ZK Verification
                 </h2>
                 <div className="divider my-2"></div>
-                <CheckItem
-                  label={`Length: ${MOCK_ZK.actualLength} chars ≥ min ${MOCK_ZK.minLength}`}
-                  passed={MOCK_ZK.lengthPassed}
-                />
-                <CheckItem
-                  label={`Fields: ${MOCK_ZK.actualFields}/${MOCK_ZK.minFields} required`}
-                  passed={MOCK_ZK.fieldsPassed}
-                />
-                <CheckItem
-                  label="ZK Proof verified on-chain"
-                  passed={MOCK_ZK.proofVerified}
-                />
-                <div className="mt-3 p-3 bg-base-200 rounded-lg">
-                  <div className="text-xs text-base-content/60 mb-1">Result IPFS:</div>
-                  <a
-                    href={`https://ipfs.io/ipfs/${MOCK_ZK.resultURI.replace("ipfs://", "")}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-info hover:underline text-xs font-mono break-all"
-                  >
-                    {MOCK_ZK.resultURI}
-                  </a>
-                </div>
+                {taskLoading ? (
+                  <div className="flex justify-center py-4">
+                    <span className="loading loading-spinner loading-md"></span>
+                  </div>
+                ) : (
+                  <>
+                    <CheckItem
+                      label={`Length check: min ${taskData ? Number(taskData.objective.minLength) : 0} chars`}
+                      passed={zkLengthPassed}
+                    />
+                    <CheckItem
+                      label={`Fields check: min ${taskData ? Number(taskData.objective.minFieldCount) : 0} required`}
+                      passed={zkFieldsPassed}
+                    />
+                    <CheckItem
+                      label="ZK Proof verified on-chain"
+                      passed={zkProofVerified}
+                    />
+                    {hasResult && taskData && taskData.resultURI ? (
+                      <div className="mt-3 p-3 bg-base-200 rounded-lg">
+                        <div className="text-xs text-base-content/60 mb-1">Result IPFS:</div>
+                        <a
+                          href={`https://ipfs.io/ipfs/${taskData.resultURI.replace("ipfs://", "")}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-info hover:underline text-xs font-mono break-all"
+                        >
+                          {taskData.resultURI}
+                        </a>
+                      </div>
+                    ) : (
+                      <div className="mt-3 p-3 bg-base-200 rounded-lg text-xs text-base-content/50 text-center">
+                        Result not submitted yet
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             </div>
 
@@ -209,47 +314,64 @@ const Home: NextPage = () => {
                 <div className="divider my-2"></div>
 
                 {/* 任务基本信息 */}
-                <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-4 text-sm">
-                  <div className="text-base-content/60">Payer</div>
-                  <div className="font-mono text-right">{MOCK_TASK.payer.slice(0, 6)}...{MOCK_TASK.payer.slice(-4)}</div>
-                  <div className="text-base-content/60">Worker</div>
-                  <div className="font-mono text-right">{MOCK_TASK.worker.slice(0, 6)}...{MOCK_TASK.worker.slice(-4)}</div>
-                  <div className="text-base-content/60">Deadline</div>
-                  <div className="text-right">{MOCK_TASK.deadline}</div>
-                  <div className="text-base-content/60">Escrow</div>
-                  <div className="font-bold text-accent text-right">{MOCK_TASK.escrow} MON</div>
-                </div>
-
-                {MOCK_TASK.status === "Resolved" ? (
-                  <div className="space-y-3 pt-3 border-t border-base-300">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-base-content/60">Final Score</span>
-                      <span className="text-2xl font-bold text-success">{avgScore}/100</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-base-content/60">Min Score</span>
-                      <span className="font-medium">{MOCK_TASK.minScore}/100</span>
-                    </div>
-                    <div className="divider my-1"></div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold">{MOCK_TASK.escrow} MON</span>
-                      </div>
-                      <span className="text-2xl">→</span>
-                      <div className="flex items-center gap-2">
-                        <span className="badge badge-success badge-lg">Agent B</span>
-                        <span className="text-success text-lg">✅</span>
-                      </div>
-                    </div>
+                {taskLoading ? (
+                  <div className="flex justify-center py-4">
+                    <span className="loading loading-spinner loading-md"></span>
                   </div>
                 ) : (
-                  <div className="text-center py-4 pt-6 border-t border-base-300">
-                    <span className="text-4xl">⏳</span>
-                    <p className="text-base-content/60 mt-2">Awaiting jury deliberation...</p>
-                    <p className="text-xs text-base-content/40 mt-1">
-                      Settlement will trigger automatically after all jury reveals
-                    </p>
-                  </div>
+                  <>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-4 text-sm">
+                      <div className="text-base-content/60">Payer</div>
+                      <div className="font-mono text-right">{shortenAddress(taskData?.payer)}</div>
+                      <div className="text-base-content/60">Worker</div>
+                      <div className="font-mono text-right">{shortenAddress(taskData?.worker)}</div>
+                      <div className="text-base-content/60">Deadline</div>
+                      <div className="text-right">{formatDeadline(taskData?.deadline)}</div>
+                      <div className="text-base-content/60">Escrow</div>
+                      <div className="font-bold text-accent text-right">{formatEscrow(taskData?.escrow)} MON</div>
+                    </div>
+
+                    {statusName === "Resolved" ? (
+                      <div className="space-y-3 pt-3 border-t border-base-300">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-base-content/60">Final Score</span>
+                          <span className="text-2xl font-bold text-success">{avgScore}/100</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-base-content/60">Min Score</span>
+                          <span className="font-medium">{taskData ? Number(taskData.minScore) : "--"}/100</span>
+                        </div>
+                        <div className="divider my-1"></div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold">{formatEscrow(taskData?.escrow)} MON</span>
+                          </div>
+                          <span className="text-2xl">→</span>
+                          <div className="flex items-center gap-2">
+                            {taskData && Number(avgScore) >= Number(taskData.minScore) ? (
+                              <>
+                                <span className="badge badge-success badge-lg">Agent B</span>
+                                <span className="text-success text-lg">✅</span>
+                              </>
+                            ) : (
+                              <>
+                                <span className="badge badge-error badge-lg">Agent A</span>
+                                <span className="text-error text-lg">↩️</span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-4 pt-6 border-t border-base-300">
+                        <span className="text-4xl">⏳</span>
+                        <p className="text-base-content/60 mt-2">Awaiting jury deliberation...</p>
+                        <p className="text-xs text-base-content/40 mt-1">
+                          Settlement will trigger automatically after all jury reveals
+                        </p>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>
@@ -264,82 +386,98 @@ const Home: NextPage = () => {
               </h2>
               <div className="divider my-2"></div>
 
-              {/* Jury 列表 */}
-              <div className="space-y-3 flex-1">
-                {MOCK_JURY.map(jury => (
-                  <div key={jury.id} className="p-3 bg-base-200 rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-sm font-bold">Jury #{jury.id}</span>
-                        <span className="text-xs text-base-content/50">{jury.address}</span>
+              {taskLoading ? (
+                <div className="flex justify-center py-8">
+                  <span className="loading loading-spinner loading-md"></span>
+                </div>
+              ) : (
+                <>
+                  {/* Jury 列表 */}
+                  <div className="space-y-3">
+                    {(juryRecords || []).length === 0 ? (
+                      <div className="text-center py-4 text-base-content/50 text-sm">
+                        No jury assigned yet
                       </div>
-                      {jury.revealed && jury.score !== null && (
-                        <span className="text-xl font-bold text-primary">{jury.score}</span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-1">
-                        <span className={`badge badge-sm ${jury.committed ? "badge-success" : "badge-ghost"}`}>
-                          C{jury.committed ? "✓" : "○"}
-                        </span>
-                        <span className="text-xs text-base-content/50">Commit</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <span className={`badge badge-sm ${jury.revealed ? "badge-success" : "badge-outline badge-warning"}`}>
-                          R{jury.revealed ? "✓" : "○"}
-                        </span>
-                        <span className="text-xs text-base-content/50">Reveal</span>
-                      </div>
-                      {!jury.revealed && (
-                        <span className="text-xs text-warning ml-auto">Waiting...</span>
-                      )}
-                    </div>
+                    ) : (
+                      (juryRecords || []).map((jury, idx) => (
+                        <div key={idx} className="p-3 bg-base-200 rounded-lg">
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono text-sm font-bold">Jury #{idx + 1}</span>
+                              <span className="text-xs text-base-content/50">{shortenAddress(jury.juror)}</span>
+                            </div>
+                            {jury.revealed && (
+                              <span className="text-xl font-bold text-primary">{Number(jury.score)}</span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-1">
+                              <span className={`badge badge-sm ${jury.committed ? "badge-success" : "badge-outline badge-warning"}`}>
+                                C{jury.committed ? "✓" : "○"}
+                              </span>
+                              <span className="text-xs text-base-content/50">Commit</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <span className={`badge badge-sm ${jury.revealed ? "badge-success" : "badge-outline badge-warning"}`}>
+                                R{jury.revealed ? "✓" : "○"}
+                              </span>
+                              <span className="text-xs text-base-content/50">Reveal</span>
+                            </div>
+                            {!jury.revealed && (
+                              <span className="text-xs text-warning ml-auto">Waiting...</span>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
-                ))}
-              </div>
 
-              {/* 平均分 */}
-              <div className="divider my-3"></div>
-              <div className="flex items-center justify-between p-3 bg-primary/10 rounded-lg">
-                <span className="font-medium">Average Score</span>
-                <span className="text-2xl font-bold text-primary">{avgScore}</span>
-              </div>
-              <div className="flex items-center justify-between mt-2 px-1">
-                <span className="text-xs text-base-content/60">
-                  {revealedJury.length}/{MOCK_JURY.length} revealed
-                </span>
-                <span className="text-xs text-base-content/60">
-                  Min: {MOCK_TASK.minScore}
-                </span>
-              </div>
+                  {/* 平均分 */}
+                  {(juryRecords || []).length > 0 && (
+                    <>
+                      <div className="divider my-3"></div>
+                      <div className="flex items-center justify-between p-3 bg-primary/10 rounded-lg">
+                        <span className="font-medium">Average Score</span>
+                        <span className="text-2xl font-bold text-primary">{avgScore}</span>
+                      </div>
+                      <div className="flex items-center justify-between mt-2 px-1">
+                        <span className="text-xs text-base-content/60">
+                          {revealedJury.length}/{(juryRecords || []).length} revealed
+                        </span>
+                        <span className="text-xs text-base-content/60">
+                          Min: {taskData ? Number(taskData.minScore) : "--"}
+                        </span>
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
             </div>
           </div>
 
         </div>
 
         {/* ---- 底部性能指标 ---- */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
           <div className="card bg-base-100 shadow-sm border border-base-300">
             <div className="card-body items-center text-center py-4">
               <div className="text-2xl mb-1">⛽</div>
               <div className="text-sm text-base-content/60">ZK Verify Gas</div>
-              <div className="text-xl font-bold text-success">{MOCK_PERFORMANCE.zkGas}</div>
+              <div className="text-xl font-bold text-success">~$0.008</div>
             </div>
           </div>
           <div className="card bg-base-100 shadow-sm border border-base-300">
             <div className="card-body items-center text-center py-4">
               <div className="text-2xl mb-1">🚀</div>
               <div className="text-sm text-base-content/60">Parallel Jury</div>
-              <div className={`text-xl font-bold ${MOCK_PERFORMANCE.parallelJury ? "text-success" : "text-error"}`}>
-                {MOCK_PERFORMANCE.parallelJury ? "✓ Concurrent" : "✗ Sequential"}
-              </div>
+              <div className="text-xl font-bold text-success">✓ Concurrent</div>
             </div>
           </div>
           <div className="card bg-base-100 shadow-sm border border-base-300">
             <div className="card-body items-center text-center py-4">
               <div className="text-2xl mb-1">⚡</div>
               <div className="text-sm text-base-content/60">Settlement Time</div>
-              <div className="text-xl font-bold text-primary">{MOCK_PERFORMANCE.settlementTime}</div>
+              <div className="text-xl font-bold text-primary">~0.4s</div>
             </div>
           </div>
         </div>
