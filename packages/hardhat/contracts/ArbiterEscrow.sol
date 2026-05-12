@@ -26,7 +26,8 @@ contract ArbiterEscrow {
         uint256 id;
         address payer;
         address worker;
-        uint256 escrow;
+        uint256 escrow;      // 任务报酬（不含 jury 费）
+        uint256 juryReward;  // 每个 Jury 的固定报酬
         uint256 deadline;
         Status status;
         ObjectiveCriteria objective;
@@ -56,11 +57,19 @@ contract ArbiterEscrow {
     uint256 public constant SLASH_DEVIATION_BPS = 1000; // 10%
     uint256 public constant MAX_DEVIATION = 20;
 
+    // ── Agent 声誉 ────────────────────────────────────────────
+    struct AgentStats {
+        uint256 tasksCompleted; // 评分 >= minScore 的次数
+        uint256 tasksFailed;    // 评分 < minScore 的次数
+        uint256 totalScore;     // 累计得分（除以 completed+failed 得平均）
+    }
+
     // ── 存储 ──────────────────────────────────────────────────
     uint256 public taskCount;
     mapping(uint256 => Task) public tasks;
     mapping(uint256 => JuryRecord[]) public juryRecords;
     mapping(uint256 => mapping(address => uint256)) public juryIndex; // taskId => juror => index+1
+    mapping(address => AgentStats) public agentStats;
 
     JuryRegistry public juryRegistry;
 
@@ -74,6 +83,7 @@ contract ArbiterEscrow {
     event ScoreCommitted(uint256 indexed taskId, address juror);
     event ScoreRevealed(uint256 indexed taskId, address juror, uint256 score);
     event TaskResolved(uint256 indexed taskId, uint256 finalScore, bool passed, address recipient);
+    event AgentStatsUpdated(address indexed agent, uint256 tasksCompleted, uint256 tasksFailed, uint256 totalScore);
 
     constructor(address _verifier, address _juryRegistry) {
         verifier = IVerifier(_verifier);
@@ -87,20 +97,23 @@ contract ArbiterEscrow {
         string calldata subjectiveCriteria,
         uint256 minScore,
         uint256 juryCount,
-        uint256 deadline
+        uint256 deadline,
+        uint256 juryReward  // 每个 Jury 的固定报酬（wei）
     ) external payable returns (uint256 taskId) {
-        require(msg.value > 0, "No escrow");
         require(worker != address(0), "Invalid worker");
         require(minScore <= 100, "Score > 100");
         require(juryCount >= 1 && juryCount <= 5, "Jury 1-5");
         require(deadline > block.timestamp, "Deadline passed");
+        uint256 totalJuryFee = juryReward * juryCount;
+        require(msg.value > totalJuryFee, "Escrow too low");
 
         taskId = taskCount++;
         Task storage t = tasks[taskId];
         t.id = taskId;
         t.payer = msg.sender;
         t.worker = worker;
-        t.escrow = msg.value;
+        t.escrow = msg.value - totalJuryFee;
+        t.juryReward = juryReward;
         t.deadline = deadline;
         t.status = Status.Created;
         t.objective = objective;
@@ -108,7 +121,7 @@ contract ArbiterEscrow {
         t.minScore = minScore;
         t.juryCount = juryCount;
 
-        emit TaskCreated(taskId, msg.sender, worker, msg.value, minScore);
+        emit TaskCreated(taskId, msg.sender, worker, t.escrow, minScore);
     }
 
     // ── Agent B：查看及格线后接单 ──────────────────────────────
@@ -232,13 +245,14 @@ contract ArbiterEscrow {
     function claimTimeout(uint256 taskId) external {
         Task storage t = tasks[taskId];
 
-        // 场景 1: Agent B 未在 deadline 前提交
+        // 场景 1: Agent B 未在 deadline 前提交，退还 escrow + 全部 jury fee
         if (
             (t.status == Status.Created || t.status == Status.Accepted) &&
             block.timestamp > t.deadline
         ) {
             t.status = Status.Resolved;
-            _transferTo(t.payer, t.escrow);
+            uint256 refund = t.escrow + t.juryReward * t.juryCount;
+            _transferTo(t.payer, refund);
             emit TaskResolved(taskId, 0, false, t.payer);
             return;
         }
@@ -310,7 +324,7 @@ contract ArbiterEscrow {
 
         uint256 avgScore = totalScore / revealedCount;
 
-        // Slash 偏离过大的 Jury
+        // Slash 偏离过大的 Jury；按时 reveal 的发固定报酬
         for (uint256 i = 0; i < records.length; i++) {
             if (records[i].revealed) {
                 uint256 diff = records[i].score > avgScore
@@ -319,16 +333,29 @@ contract ArbiterEscrow {
                 if (diff > MAX_DEVIATION) {
                     juryRegistry.slash(records[i].juror, SLASH_DEVIATION_BPS);
                 }
-                // 释放 Jury 活跃状态
+                // 固定 Jury 报酬
+                if (t.juryReward > 0) {
+                    _transferTo(records[i].juror, t.juryReward);
+                }
                 juryRegistry.setActive(records[i].juror, false);
             }
         }
 
-        // 二元结算
+        // 二元结算（escrow 已不含 jury fee）
         t.status = Status.Resolved;
         bool passed = avgScore >= t.minScore;
         address recipient = passed ? t.worker : t.payer;
         _transferTo(recipient, t.escrow);
+
+        // 更新 Agent 声誉
+        AgentStats storage stats = agentStats[t.worker];
+        if (passed) {
+            stats.tasksCompleted++;
+        } else {
+            stats.tasksFailed++;
+        }
+        stats.totalScore += avgScore;
+        emit AgentStatsUpdated(t.worker, stats.tasksCompleted, stats.tasksFailed, stats.totalScore);
 
         emit TaskResolved(taskId, avgScore, passed, recipient);
     }
@@ -387,6 +414,10 @@ contract ArbiterEscrow {
 
     function getJuryRecords(uint256 taskId) external view returns (JuryRecord[] memory) {
         return juryRecords[taskId];
+    }
+
+    function getAgentStats(address agent) external view returns (AgentStats memory) {
+        return agentStats[agent];
     }
 
     function getAssignedJurors(uint256 taskId) external view returns (address[] memory) {

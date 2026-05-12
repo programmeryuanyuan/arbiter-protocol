@@ -597,10 +597,21 @@ arbiter-protocol/                        # npx create-eth@latest 生成
 | 项目 | 核心差异 |
 |------|---------|
 | TickPay | 流式支付，无结果验证 |
-| Teleo | LLM 当裁判（主观），无 ZK |
+| Teleo | 单一 LLM 当裁判（可幻觉、黑箱、无经济约束），无 ZK，无多 Agent |
 | Yiling | 预测市场共识，非雇佣结算 |
 | Clawork / Dispatch | 任务市场，无 Jury + ZK 验收层 |
-| **Arbiter Protocol** | **ZK 格式门槛 + Commit-Reveal Jury 主观裁决，两层信任，Monad 原生** |
+| **Arbiter Protocol** | **ZK 数学证明（不可伪造）+ Commit-Reveal 多 Jury（防串通）+ 链上 Agent 声誉 + 结果隐私，两层信任，Monad 原生** |
+
+**与 Teleo 的核心差异：**
+
+| 维度 | Teleo | Arbiter Protocol |
+|------|-------|-----------------|
+| 客观验证 | LLM 判断（可幻觉、可操控） | ZK Proof（数学不可伪造） |
+| 主观裁决 | 单一 LLM，单点失败 | 多 Jury Commit-Reveal，防串通 |
+| 裁判问责 | 无经济约束 | Jury stake + slash，有皮肤在游戏 |
+| 结果隐私 | 内容暴露给 LLM | ZK 证明合规，内容不上链 |
+| Agent 信用 | 无历史记录 | 链上声誉（完成率、平均分）可查 |
+| 适用对象 | 人类自由职业者 | AI Agent 之间自动结算 |
 
 ---
 
@@ -608,7 +619,7 @@ arbiter-protocol/                        # npx create-eth@latest 生成
 
 | 阶段 | 内容 |
 |------|------|
-| MVP（黑客松） | ZK 格式门槛 + Commit-Reveal Jury + 条件 Escrow + Monad 并行 |
-| V2 | x402 HTTP 接入，任何 Agent 无需 SDK 直接使用 |
-| V3 | TEE 可信执行环境保护 Jury 端隐私，Jury Slash 激励完善，跨任务声誉积累，比例结算 |
+| MVP（黑客松） | ZK 格式门槛 + Commit-Reveal Jury + 条件 Escrow + 链上 Agent 声誉 + Monad 并行 |
+| V2 | x402 HTTP 接入（任何 Agent 无需 SDK 直接使用）；任务类型模板（代码审计 / 数据报告 / 内容生成，对应不同 ZK 参数，买方一键选择） |
+| V3 | TEE 可信执行环境保护 Jury 端隐私；比例结算（按分数线性释放）；Jury 专业领域匹配 |
 | 长期 | 协议层开放，成为所有 Agent 协作平台的条件结算基础设施 |

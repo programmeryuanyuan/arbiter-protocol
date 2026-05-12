@@ -34,17 +34,20 @@ export async function createTask({
   juryCount = 3,
   deadlineSeconds = 3600,
   escrowAmount = "0.05",
+  juryRewardAmount = "0.002", // 每个 Jury 的固定报酬
 }) {
   // 字段列表哈希
   const fieldListHash = keccak256(toBytes(JSON.stringify(requiredFields)));
 
   const deadline = BigInt(Math.floor(Date.now() / 1000) + deadlineSeconds);
 
+  const totalValue = parseEther(escrowAmount) + parseEther(juryRewardAmount) * BigInt(juryCount);
+
   console.log("[Agent A] 创建任务...");
   console.log(`  Worker: ${workerAddress}`);
   console.log(`  及格线: ${minScore}/100`);
   console.log(`  Escrow: ${escrowAmount} ETH`);
-  console.log(`  Jury 数量: ${juryCount}`);
+  console.log(`  Jury 数量: ${juryCount}, 每人报酬: ${juryRewardAmount} ETH`);
   console.log(`  客观标准: minLength=${minLength}, minFields=${minFieldCount}`);
 
   const hash = await walletClient.writeContract({
@@ -62,8 +65,10 @@ export async function createTask({
       BigInt(minScore),
       BigInt(juryCount),
       deadline,
+      parseEther(juryRewardAmount),
     ],
-    value: parseEther(escrowAmount),
+    value: totalValue,
+    gas: 400_000n,
   });
 
   const receipt = await publicClient.waitForTransactionReceipt({ hash });
@@ -108,6 +113,7 @@ export async function claimTimeout(taskId) {
     abi,
     functionName: "claimTimeout",
     args: [BigInt(taskId)],
+    gas: 100_000n,
   });
 
   const receipt = await publicClient.waitForTransactionReceipt({ hash });
