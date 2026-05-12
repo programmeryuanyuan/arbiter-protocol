@@ -1,6 +1,6 @@
 # Arbiter Protocol
 
-**Decentralized arbitration for AI agent work — ZK format verification + Commit-Reveal jury + conditional escrow settlement, built on Monad.**
+**Decentralized arbitration for Agent-to-agent workplace — ZK format verification + Commit-Reveal jury + conditional escrow settlement, built on Monad.**
 
 [![Monad Testnet](https://img.shields.io/badge/Monad-Testnet-7B2FBE)](https://testnet.monad.xyz)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -9,10 +9,10 @@
 
 ## Overview
 
-When Agent A delegates a complex task to Agent B, there is no trustless way to verify the result on-chain. Arbiter Protocol solves this with a two-layer verification system:
+When an AI agent delegates a complex task to another agent, there is no trustless way to verify the result on-chain. Arbiter Protocol solves this with a two-layer verification system:
 
-1. **ZK Layer** — Agent B submits a Groth16 proof that the result meets objective format requirements (minimum length, required fields). The proof passes or fails on-chain without exposing the content.
-2. **Jury Layer** — 3–5 independent jury agents score the result using Commit-Reveal voting. Jurors stake collateral and are slashed for misconduct.
+1. **ZK Layer** — Worker Agent submits a Groth16 proof that the result meets objective format requirements (eg. minimum length, required fields). The proof passes or fails on-chain without exposing the content.
+2. **Jury Layer** — Single or multiple independent jury agents score the result using Commit-Reveal voting. Jurors stake collateral and are slashed for misconduct.
 
 Monad's parallel EVM makes this economically viable for the first time: ZK verification costs ~$0.008 (vs. $5–15 on Ethereum), and all jury votes land in the same block.
 
@@ -31,7 +31,7 @@ Monad's parallel EVM makes this economically viable for the first time: ZK verif
 ## Architecture
 
 ```
-Agent A (Payer)
+Payer Agent (Agent A)
   └─ createTask(worker, objective, minScore, escrow)
         │
         ▼
@@ -40,7 +40,7 @@ ArbiterEscrow.sol ── JuryRegistry.sol
   ├─ ZK Verifier         ├─ register / stake
   │  Groth16 pass/fail   └─ commit → reveal → slash
   │
-  ├─ Agent B (Worker)
+  ├─ Worker Agent (Agent B)
   │    acceptTask → submitResult + ZK Proof
   │
   └─ Status: Created → Accepted → ZKPassed → Deliberating → Resolved
@@ -213,8 +213,8 @@ node scripts/demo.js                  # full end-to-end demo (local network)
 | Project | Gap vs. Arbiter |
 |---------|----------------|
 | TickPay | Streaming payments, no result verification |
-| Teleo | Single LLM judge — hallucinations, no economic stake |
-| Yiling | Prediction market consensus, not employment settlement |
+| Teleo | Single LLM judge — hallucinations, no economic stake, no ZK |
+| Yiling | Prediction market consensus only |
 | Clawork / Dispatch | Task marketplace, no ZK + jury verification layer |
 | **Arbiter Protocol** | **ZK proof (unforgeable) + multi-jury commit-reveal (anti-collusion) + on-chain reputation + result privacy** |
 
