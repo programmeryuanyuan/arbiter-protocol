@@ -1,0 +1,1186 @@
+{
+  "address": "0x4A3175932d004666e3342C8356A824786a58A234",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_verifier",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_juryRegistry",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "taskId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "juror",
+          "type": "address"
+        }
+      ],
+      "name": "ScoreCommitted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "taskId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "juror",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "score",
+          "type": "uint256"
+        }
+      ],
+      "name": "ScoreRevealed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "taskId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "worker",
+          "type": "address"
+        }
+      ],
+      "name": "TaskAccepted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "taskId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "payer",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "worker",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "escrow",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "minScore",
+          "type": "uint256"
+        }
+      ],
+      "name": "TaskCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "taskId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "finalScore",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "passed",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        }
+      ],
+      "name": "TaskResolved",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "taskId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "resultURI",
+          "type": "string"
+        }
+      ],
+      "name": "ZKPassed",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "COMMIT_WINDOW",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "MAX_DEVIATION",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "REVEAL_WINDOW",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "SLASH_DEVIATION_BPS",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "SLASH_NO_REVEAL_BPS",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "taskId",
+          "type": "uint256"
+        }
+      ],
+      "name": "acceptTask",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "taskId",
+          "type": "uint256"
+        }
+      ],
+      "name": "claimTimeout",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "taskId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "scoreHash",
+          "type": "bytes32"
+        }
+      ],
+      "name": "commitScore",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "worker",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "minLength",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minFieldCount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "fieldListHash",
+              "type": "bytes32"
+            }
+          ],
+          "internalType": "struct ArbiterEscrow.ObjectiveCriteria",
+          "name": "objective",
+          "type": "tuple"
+        },
+        {
+          "internalType": "string",
+          "name": "subjectiveCriteria",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "minScore",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "juryCount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "deadline",
+          "type": "uint256"
+        }
+      ],
+      "name": "createTask",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "taskId",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "taskId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getAssignedJurors",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "taskId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getJuryRecords",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "juror",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "scoreHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "score",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "committed",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "revealed",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct ArbiterEscrow.JuryRecord[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "taskId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getTask",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "payer",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "worker",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "escrow",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            },
+            {
+              "internalType": "enum ArbiterEscrow.Status",
+              "name": "status",
+              "type": "uint8"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "minLength",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "minFieldCount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "fieldListHash",
+                  "type": "bytes32"
+                }
+              ],
+              "internalType": "struct ArbiterEscrow.ObjectiveCriteria",
+              "name": "objective",
+              "type": "tuple"
+            },
+            {
+              "internalType": "string",
+              "name": "subjectiveCriteria",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minScore",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "resultCommitment",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "string",
+              "name": "resultURI",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "juryCount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "juryCommitted",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "juryRevealed",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "commitDeadline",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "revealDeadline",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct ArbiterEscrow.Task",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "juryIndex",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "juryRecords",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "juror",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "scoreHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "score",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "committed",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "revealed",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "juryRegistry",
+      "outputs": [
+        {
+          "internalType": "contract JuryRegistry",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "taskId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "score",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "salt",
+          "type": "bytes32"
+        }
+      ],
+      "name": "revealScore",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "taskId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "resultCommitment",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "string",
+          "name": "resultURI",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256[2]",
+          "name": "proofA",
+          "type": "uint256[2]"
+        },
+        {
+          "internalType": "uint256[2][2]",
+          "name": "proofB",
+          "type": "uint256[2][2]"
+        },
+        {
+          "internalType": "uint256[2]",
+          "name": "proofC",
+          "type": "uint256[2]"
+        },
+        {
+          "internalType": "uint256[3]",
+          "name": "publicSignals",
+          "type": "uint256[3]"
+        }
+      ],
+      "name": "submitResult",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "taskCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "tasks",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "payer",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "worker",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "escrow",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "deadline",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum ArbiterEscrow.Status",
+          "name": "status",
+          "type": "uint8"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "minLength",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "minFieldCount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "fieldListHash",
+              "type": "bytes32"
+            }
+          ],
+          "internalType": "struct ArbiterEscrow.ObjectiveCriteria",
+          "name": "objective",
+          "type": "tuple"
+        },
+        {
+          "internalType": "string",
+          "name": "subjectiveCriteria",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "minScore",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "resultCommitment",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "string",
+          "name": "resultURI",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "juryCount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "juryCommitted",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "juryRevealed",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "commitDeadline",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "revealDeadline",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "verifier",
+      "outputs": [
+        {
+          "internalType": "contract IVerifier",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x4c77e1dc92ca62c1d2488a0f62843d770b4468b669132286c501263c09589786",
+  "receipt": {
+    "to": null,
+    "from": "0x9Fa37bD3c7E656823dACA2D5aB6A3E059F95f61d",
+    "contractAddress": "0x4A3175932d004666e3342C8356A824786a58A234",
+    "transactionIndex": 1,
+    "gasUsed": "2197746",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0xdfbb4ce768d78ad51daf2f0cbdaf406f6ba8f94af8d4e811eb11ee884b7e9010",
+    "transactionHash": "0x4c77e1dc92ca62c1d2488a0f62843d770b4468b669132286c501263c09589786",
+    "logs": [],
+    "blockNumber": 31248734,
+    "cumulativeGasUsed": "2197746",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    "0x33E414c7Cf0856076348329E7402DBB3744584bF",
+    "0x18495058554af5d5Ee674221691FDf4754E09BF8"
+  ],
+  "numDeployments": 1,
+  "solcInputHash": "aa4716c1740859d4a132efee48468a19",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.20+commit.a1b79de6\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_verifier\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_juryRegistry\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"taskId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"juror\",\"type\":\"address\"}],\"name\":\"ScoreCommitted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"taskId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"juror\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"score\",\"type\":\"uint256\"}],\"name\":\"ScoreRevealed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"taskId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"worker\",\"type\":\"address\"}],\"name\":\"TaskAccepted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"taskId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"payer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"worker\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"escrow\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"minScore\",\"type\":\"uint256\"}],\"name\":\"TaskCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"taskId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"finalScore\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"passed\",\"type\":\"bool\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"}],\"name\":\"TaskResolved\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"taskId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"resultURI\",\"type\":\"string\"}],\"name\":\"ZKPassed\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"COMMIT_WINDOW\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"MAX_DEVIATION\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"REVEAL_WINDOW\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"SLASH_DEVIATION_BPS\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"SLASH_NO_REVEAL_BPS\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"taskId\",\"type\":\"uint256\"}],\"name\":\"acceptTask\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"taskId\",\"type\":\"uint256\"}],\"name\":\"claimTimeout\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"taskId\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"scoreHash\",\"type\":\"bytes32\"}],\"name\":\"commitScore\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"worker\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"minLength\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minFieldCount\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"fieldListHash\",\"type\":\"bytes32\"}],\"internalType\":\"struct ArbiterEscrow.ObjectiveCriteria\",\"name\":\"objective\",\"type\":\"tuple\"},{\"internalType\":\"string\",\"name\":\"subjectiveCriteria\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"minScore\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"juryCount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"}],\"name\":\"createTask\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"taskId\",\"type\":\"uint256\"}],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"taskId\",\"type\":\"uint256\"}],\"name\":\"getAssignedJurors\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"taskId\",\"type\":\"uint256\"}],\"name\":\"getJuryRecords\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"juror\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"scoreHash\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"score\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"committed\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"revealed\",\"type\":\"bool\"}],\"internalType\":\"struct ArbiterEscrow.JuryRecord[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"taskId\",\"type\":\"uint256\"}],\"name\":\"getTask\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"payer\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"worker\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"escrow\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"},{\"internalType\":\"enum ArbiterEscrow.Status\",\"name\":\"status\",\"type\":\"uint8\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"minLength\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minFieldCount\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"fieldListHash\",\"type\":\"bytes32\"}],\"internalType\":\"struct ArbiterEscrow.ObjectiveCriteria\",\"name\":\"objective\",\"type\":\"tuple\"},{\"internalType\":\"string\",\"name\":\"subjectiveCriteria\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"minScore\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"resultCommitment\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"resultURI\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"juryCount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"juryCommitted\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"juryRevealed\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"commitDeadline\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"revealDeadline\",\"type\":\"uint256\"}],\"internalType\":\"struct ArbiterEscrow.Task\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"juryIndex\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"juryRecords\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"juror\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"scoreHash\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"score\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"committed\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"revealed\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"juryRegistry\",\"outputs\":[{\"internalType\":\"contract JuryRegistry\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"taskId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"score\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"salt\",\"type\":\"bytes32\"}],\"name\":\"revealScore\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"taskId\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"resultCommitment\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"resultURI\",\"type\":\"string\"},{\"internalType\":\"uint256[2]\",\"name\":\"proofA\",\"type\":\"uint256[2]\"},{\"internalType\":\"uint256[2][2]\",\"name\":\"proofB\",\"type\":\"uint256[2][2]\"},{\"internalType\":\"uint256[2]\",\"name\":\"proofC\",\"type\":\"uint256[2]\"},{\"internalType\":\"uint256[3]\",\"name\":\"publicSignals\",\"type\":\"uint256[3]\"}],\"name\":\"submitResult\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"taskCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"tasks\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"payer\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"worker\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"escrow\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"},{\"internalType\":\"enum ArbiterEscrow.Status\",\"name\":\"status\",\"type\":\"uint8\"},{\"components\":[{\"internalType\":\"uint256\",\"name\":\"minLength\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"minFieldCount\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"fieldListHash\",\"type\":\"bytes32\"}],\"internalType\":\"struct ArbiterEscrow.ObjectiveCriteria\",\"name\":\"objective\",\"type\":\"tuple\"},{\"internalType\":\"string\",\"name\":\"subjectiveCriteria\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"minScore\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"resultCommitment\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"resultURI\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"juryCount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"juryCommitted\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"juryRevealed\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"commitDeadline\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"revealDeadline\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"verifier\",\"outputs\":[{\"internalType\":\"contract IVerifier\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"title\":\"ArbiterEscrow - Agent \\u534f\\u4f5c\\u6761\\u4ef6\\u7ed3\\u7b97\\u534f\\u8bae\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"notice\":\"ZK pass/fail \\u95e8\\u69db + Commit-Reveal Jury \\u4e3b\\u89c2\\u88c1\\u51b3 + \\u6761\\u4ef6 Escrow \\u7ed3\\u7b97\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/ArbiterEscrow.sol\":\"ArbiterEscrow\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"contracts/ArbiterEscrow.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.20;\\n\\nimport \\\"./JuryRegistry.sol\\\";\\n\\n/// @title ArbiterEscrow - Agent \\u534f\\u4f5c\\u6761\\u4ef6\\u7ed3\\u7b97\\u534f\\u8bae\\n/// @notice ZK pass/fail \\u95e8\\u69db + Commit-Reveal Jury \\u4e3b\\u89c2\\u88c1\\u51b3 + \\u6761\\u4ef6 Escrow \\u7ed3\\u7b97\\ncontract ArbiterEscrow {\\n    // \\u2500\\u2500 \\u72b6\\u6001\\u679a\\u4e3e \\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\n    enum Status {\\n        Created,      // Agent A \\u5efa\\u4efb\\u52a1\\uff0c\\u8d44\\u91d1\\u9501\\u5b9a\\n        Accepted,     // Agent B \\u786e\\u8ba4\\u53ca\\u683c\\u7ebf\\uff0c\\u63a5\\u53d7\\u4efb\\u52a1\\n        ZKPassed,     // ZK Proof \\u901a\\u8fc7\\uff08\\u683c\\u5f0f\\u5408\\u89c4\\uff09\\n        Deliberating, // Jury commit-reveal \\u8fdb\\u884c\\u4e2d\\n        Resolved      // \\u7ed3\\u7b97\\u5b8c\\u6210\\n    }\\n\\n    // \\u2500\\u2500 \\u6570\\u636e\\u7ed3\\u6784 \\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\n    struct ObjectiveCriteria {\\n        uint256 minLength;\\n        uint256 minFieldCount;\\n        bytes32 fieldListHash;\\n    }\\n\\n    struct Task {\\n        uint256 id;\\n        address payer;\\n        address worker;\\n        uint256 escrow;\\n        uint256 deadline;\\n        Status status;\\n        ObjectiveCriteria objective;\\n        string subjectiveCriteria;\\n        uint256 minScore;\\n        bytes32 resultCommitment;\\n        string resultURI;\\n        uint256 juryCount;\\n        uint256 juryCommitted;\\n        uint256 juryRevealed;\\n        uint256 commitDeadline;\\n        uint256 revealDeadline;\\n    }\\n\\n    struct JuryRecord {\\n        address juror;\\n        bytes32 scoreHash;\\n        uint256 score;\\n        bool committed;\\n        bool revealed;\\n    }\\n\\n    // \\u2500\\u2500 \\u5e38\\u91cf \\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\n    uint256 public constant COMMIT_WINDOW = 300; // 5 min\\uff08Demo \\u53ef\\u6539 60s\\uff09\\n    uint256 public constant REVEAL_WINDOW = 300;\\n    uint256 public constant SLASH_NO_REVEAL_BPS = 2000; // 20%\\n    uint256 public constant SLASH_DEVIATION_BPS = 1000; // 10%\\n    uint256 public constant MAX_DEVIATION = 20;\\n\\n    // \\u2500\\u2500 \\u5b58\\u50a8 \\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\n    uint256 public taskCount;\\n    mapping(uint256 => Task) public tasks;\\n    mapping(uint256 => JuryRecord[]) public juryRecords;\\n    mapping(uint256 => mapping(address => uint256)) public juryIndex; // taskId => juror => index+1\\n\\n    JuryRegistry public juryRegistry;\\n\\n    // ZK Verifier \\u63a5\\u53e3\\uff08snarkjs \\u751f\\u6210\\u7684 Verifier.sol\\uff09\\n    IVerifier public verifier;\\n\\n    // \\u2500\\u2500 \\u4e8b\\u4ef6 \\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\n    event TaskCreated(uint256 indexed taskId, address payer, address worker, uint256 escrow, uint256 minScore);\\n    event TaskAccepted(uint256 indexed taskId, address worker);\\n    event ZKPassed(uint256 indexed taskId, string resultURI);\\n    event ScoreCommitted(uint256 indexed taskId, address juror);\\n    event ScoreRevealed(uint256 indexed taskId, address juror, uint256 score);\\n    event TaskResolved(uint256 indexed taskId, uint256 finalScore, bool passed, address recipient);\\n\\n    constructor(address _verifier, address _juryRegistry) {\\n        verifier = IVerifier(_verifier);\\n        juryRegistry = JuryRegistry(_juryRegistry);\\n    }\\n\\n    // \\u2500\\u2500 Agent A\\uff1a\\u521b\\u5efa\\u4efb\\u52a1 \\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\n    function createTask(\\n        address worker,\\n        ObjectiveCriteria calldata objective,\\n        string calldata subjectiveCriteria,\\n        uint256 minScore,\\n        uint256 juryCount,\\n        uint256 deadline\\n    ) external payable returns (uint256 taskId) {\\n        require(msg.value > 0, \\\"No escrow\\\");\\n        require(worker != address(0), \\\"Invalid worker\\\");\\n        require(minScore <= 100, \\\"Score > 100\\\");\\n        require(juryCount >= 1 && juryCount <= 5, \\\"Jury 1-5\\\");\\n        require(deadline > block.timestamp, \\\"Deadline passed\\\");\\n\\n        taskId = taskCount++;\\n        Task storage t = tasks[taskId];\\n        t.id = taskId;\\n        t.payer = msg.sender;\\n        t.worker = worker;\\n        t.escrow = msg.value;\\n        t.deadline = deadline;\\n        t.status = Status.Created;\\n        t.objective = objective;\\n        t.subjectiveCriteria = subjectiveCriteria;\\n        t.minScore = minScore;\\n        t.juryCount = juryCount;\\n\\n        emit TaskCreated(taskId, msg.sender, worker, msg.value, minScore);\\n    }\\n\\n    // \\u2500\\u2500 Agent B\\uff1a\\u67e5\\u770b\\u53ca\\u683c\\u7ebf\\u540e\\u63a5\\u5355 \\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\n    function acceptTask(uint256 taskId) external {\\n        Task storage t = tasks[taskId];\\n        require(t.status == Status.Created, \\\"Not Created\\\");\\n        require(msg.sender == t.worker, \\\"Not worker\\\");\\n\\n        t.status = Status.Accepted;\\n        emit TaskAccepted(taskId, msg.sender);\\n    }\\n\\n    // \\u2500\\u2500 Agent B\\uff1a\\u63d0\\u4ea4\\u7ed3\\u679c + ZK Proof \\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\n    function submitResult(\\n        uint256 taskId,\\n        bytes32 resultCommitment,\\n        string calldata resultURI,\\n        uint256[2] calldata proofA,\\n        uint256[2][2] calldata proofB,\\n        uint256[2] calldata proofC,\\n        uint256[3] calldata publicSignals // [minLength, minFields, commitment]\\n    ) external {\\n        Task storage t = tasks[taskId];\\n        require(t.status == Status.Accepted, \\\"Not Accepted\\\");\\n        require(msg.sender == t.worker, \\\"Not worker\\\");\\n        require(block.timestamp <= t.deadline, \\\"Deadline passed\\\");\\n\\n        // \\u9a8c\\u8bc1 publicSignals \\u4e0e\\u4efb\\u52a1\\u53c2\\u6570\\u4e00\\u81f4\\n        require(publicSignals[0] == t.objective.minLength, \\\"minLength mismatch\\\");\\n        require(publicSignals[1] == t.objective.minFieldCount, \\\"minFields mismatch\\\");\\n        require(publicSignals[2] == uint256(resultCommitment), \\\"commitment mismatch\\\");\\n\\n        // ZK \\u9a8c\\u8bc1\\n        require(\\n            verifier.verifyProof(proofA, proofB, proofC, publicSignals),\\n            \\\"ZK proof invalid\\\"\\n        );\\n\\n        t.resultCommitment = resultCommitment;\\n        t.resultURI = resultURI;\\n        t.status = Status.ZKPassed;\\n        t.commitDeadline = block.timestamp + COMMIT_WINDOW;\\n\\n        // \\u968f\\u673a\\u9009\\u53d6 Jury\\n        _selectJury(taskId);\\n\\n        emit ZKPassed(taskId, resultURI);\\n    }\\n\\n    // \\u2500\\u2500 Jury\\uff1aCommit \\u8bc4\\u5206\\u54c8\\u5e0c \\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\n    function commitScore(uint256 taskId, bytes32 scoreHash) external {\\n        Task storage t = tasks[taskId];\\n        require(\\n            t.status == Status.ZKPassed || t.status == Status.Deliberating,\\n            \\\"Not in jury phase\\\"\\n        );\\n        require(block.timestamp <= t.commitDeadline, \\\"Commit window closed\\\");\\n\\n        uint256 idx = juryIndex[taskId][msg.sender];\\n        require(idx > 0, \\\"Not assigned jury\\\");\\n        idx--; // \\u8f6c\\u4e3a 0-based\\n\\n        JuryRecord storage rec = juryRecords[taskId][idx];\\n        require(!rec.committed, \\\"Already committed\\\");\\n\\n        rec.scoreHash = scoreHash;\\n        rec.committed = true;\\n        t.juryCommitted++;\\n\\n        if (t.status == Status.ZKPassed) {\\n            t.status = Status.Deliberating;\\n        }\\n\\n        // \\u5168\\u90e8 commit \\u540e\\u8bbe\\u7f6e reveal deadline\\n        if (t.juryCommitted == t.juryCount) {\\n            t.revealDeadline = block.timestamp + REVEAL_WINDOW;\\n        }\\n\\n        emit ScoreCommitted(taskId, msg.sender);\\n    }\\n\\n    // \\u2500\\u2500 Jury\\uff1aReveal \\u771f\\u5b9e\\u8bc4\\u5206 \\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\n    function revealScore(\\n        uint256 taskId,\\n        uint256 score,\\n        bytes32 salt\\n    ) external {\\n        Task storage t = tasks[taskId];\\n        require(t.status == Status.Deliberating, \\\"Not deliberating\\\");\\n        require(t.revealDeadline > 0, \\\"Reveal not started\\\");\\n        require(block.timestamp <= t.revealDeadline, \\\"Reveal window closed\\\");\\n        require(score <= 100, \\\"Score > 100\\\");\\n\\n        uint256 idx = juryIndex[taskId][msg.sender];\\n        require(idx > 0, \\\"Not assigned jury\\\");\\n        idx--;\\n\\n        JuryRecord storage rec = juryRecords[taskId][idx];\\n        require(rec.committed, \\\"Not committed\\\");\\n        require(!rec.revealed, \\\"Already revealed\\\");\\n\\n        // \\u9a8c\\u8bc1 hash\\n        require(\\n            rec.scoreHash == keccak256(abi.encodePacked(score, salt)),\\n            \\\"Hash mismatch\\\"\\n        );\\n\\n        rec.score = score;\\n        rec.revealed = true;\\n        t.juryRevealed++;\\n\\n        emit ScoreRevealed(taskId, msg.sender, score);\\n\\n        // \\u5168\\u90e8 reveal \\u540e\\u81ea\\u52a8\\u7ed3\\u7b97\\n        if (t.juryRevealed == t.juryCount) {\\n            _settle(taskId);\\n        }\\n    }\\n\\n    // \\u2500\\u2500 \\u8d85\\u65f6\\u4fdd\\u62a4 \\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\n    function claimTimeout(uint256 taskId) external {\\n        Task storage t = tasks[taskId];\\n\\n        // \\u573a\\u666f 1: Agent B \\u672a\\u5728 deadline \\u524d\\u63d0\\u4ea4\\n        if (\\n            (t.status == Status.Created || t.status == Status.Accepted) &&\\n            block.timestamp > t.deadline\\n        ) {\\n            t.status = Status.Resolved;\\n            _transferTo(t.payer, t.escrow);\\n            emit TaskResolved(taskId, 0, false, t.payer);\\n            return;\\n        }\\n\\n        // \\u573a\\u666f 2: commitDeadline \\u8fc7\\u4e86\\uff0c\\u90e8\\u5206 Jury \\u672a commit\\n        if (\\n            (t.status == Status.ZKPassed || t.status == Status.Deliberating) &&\\n            t.commitDeadline > 0 &&\\n            block.timestamp > t.commitDeadline &&\\n            t.juryCommitted < t.juryCount\\n        ) {\\n            // \\u7528\\u5df2 commit \\u7684\\u7ee7\\u7eed\\uff0c\\u8bbe\\u7f6e reveal deadline\\n            if (t.juryCommitted > 0) {\\n                t.juryCount = t.juryCommitted; // \\u7f29\\u51cf\\u5230\\u5df2 commit \\u6570\\n                t.revealDeadline = block.timestamp + REVEAL_WINDOW;\\n                t.status = Status.Deliberating;\\n            } else {\\n                // \\u65e0\\u4eba commit\\uff0c\\u9000\\u6b3e\\n                t.status = Status.Resolved;\\n                _transferTo(t.payer, t.escrow);\\n                emit TaskResolved(taskId, 0, false, t.payer);\\n            }\\n            return;\\n        }\\n\\n        // \\u573a\\u666f 3: revealDeadline \\u8fc7\\u4e86\\uff0c\\u90e8\\u5206 Jury \\u672a reveal\\n        if (\\n            t.status == Status.Deliberating &&\\n            t.revealDeadline > 0 &&\\n            block.timestamp > t.revealDeadline &&\\n            t.juryRevealed < t.juryCount\\n        ) {\\n            // Slash \\u672a reveal \\u7684 Jury\\n            JuryRecord[] storage records = juryRecords[taskId];\\n            for (uint256 i = 0; i < records.length; i++) {\\n                if (records[i].committed && !records[i].revealed) {\\n                    juryRegistry.slash(records[i].juror, SLASH_NO_REVEAL_BPS);\\n                }\\n            }\\n\\n            if (t.juryRevealed > 0) {\\n                _settle(taskId);\\n            } else {\\n                t.status = Status.Resolved;\\n                _transferTo(t.payer, t.escrow);\\n                emit TaskResolved(taskId, 0, false, t.payer);\\n            }\\n            return;\\n        }\\n\\n        revert(\\\"No timeout condition met\\\");\\n    }\\n\\n    // \\u2500\\u2500 \\u5185\\u90e8\\uff1a\\u7ed3\\u7b97 \\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\n    function _settle(uint256 taskId) internal {\\n        Task storage t = tasks[taskId];\\n\\n        // \\u8ba1\\u7b97\\u5e73\\u5747\\u5206\\n        uint256 totalScore;\\n        uint256 revealedCount;\\n        JuryRecord[] storage records = juryRecords[taskId];\\n\\n        for (uint256 i = 0; i < records.length; i++) {\\n            if (records[i].revealed) {\\n                totalScore += records[i].score;\\n                revealedCount++;\\n            }\\n        }\\n\\n        uint256 avgScore = totalScore / revealedCount;\\n\\n        // Slash \\u504f\\u79bb\\u8fc7\\u5927\\u7684 Jury\\n        for (uint256 i = 0; i < records.length; i++) {\\n            if (records[i].revealed) {\\n                uint256 diff = records[i].score > avgScore\\n                    ? records[i].score - avgScore\\n                    : avgScore - records[i].score;\\n                if (diff > MAX_DEVIATION) {\\n                    juryRegistry.slash(records[i].juror, SLASH_DEVIATION_BPS);\\n                }\\n                // \\u91ca\\u653e Jury \\u6d3b\\u8dc3\\u72b6\\u6001\\n                juryRegistry.setActive(records[i].juror, false);\\n            }\\n        }\\n\\n        // \\u4e8c\\u5143\\u7ed3\\u7b97\\n        t.status = Status.Resolved;\\n        bool passed = avgScore >= t.minScore;\\n        address recipient = passed ? t.worker : t.payer;\\n        _transferTo(recipient, t.escrow);\\n\\n        emit TaskResolved(taskId, avgScore, passed, recipient);\\n    }\\n\\n    // \\u2500\\u2500 \\u5185\\u90e8\\uff1a\\u968f\\u673a\\u9009\\u53d6 Jury \\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\n    function _selectJury(uint256 taskId) internal {\\n        Task storage t = tasks[taskId];\\n        uint256 total = juryRegistry.getJurorCount();\\n\\n        // Collect all eligible jurors first\\n        address[] memory eligible = new address[](total);\\n        uint256 count = 0;\\n        for (uint256 i = 0; i < total; i++) {\\n            address juror = juryRegistry.getJuror(i);\\n            if (juryRegistry.isEligible(juror)) {\\n                eligible[count++] = juror;\\n            }\\n        }\\n        require(count >= t.juryCount, \\\"Not enough eligible jurors\\\");\\n\\n        // Fisher-Yates shuffle: swap first juryCount positions\\n        uint256 seed = uint256(\\n            keccak256(abi.encodePacked(block.timestamp, block.prevrandao, taskId))\\n        );\\n        for (uint256 i = 0; i < t.juryCount; i++) {\\n            uint256 j = i + uint256(keccak256(abi.encodePacked(seed, i))) % (count - i);\\n            (eligible[i], eligible[j]) = (eligible[j], eligible[i]);\\n        }\\n\\n        // Assign first juryCount jurors\\n        for (uint256 i = 0; i < t.juryCount; i++) {\\n            address juror = eligible[i];\\n            juryRecords[taskId].push(\\n                JuryRecord({\\n                    juror: juror,\\n                    scoreHash: bytes32(0),\\n                    score: 0,\\n                    committed: false,\\n                    revealed: false\\n                })\\n            );\\n            juryIndex[taskId][juror] = juryRecords[taskId].length; // 1-based\\n            juryRegistry.setActive(juror, true);\\n        }\\n    }\\n\\n    function _transferTo(address to, uint256 amount) internal {\\n        (bool ok, ) = to.call{value: amount}(\\\"\\\");\\n        require(ok, \\\"Transfer failed\\\");\\n    }\\n\\n    // \\u2500\\u2500 \\u67e5\\u8be2\\u8f85\\u52a9 \\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\u2500\\n    function getTask(uint256 taskId) external view returns (Task memory) {\\n        return tasks[taskId];\\n    }\\n\\n    function getJuryRecords(uint256 taskId) external view returns (JuryRecord[] memory) {\\n        return juryRecords[taskId];\\n    }\\n\\n    function getAssignedJurors(uint256 taskId) external view returns (address[] memory) {\\n        JuryRecord[] storage records = juryRecords[taskId];\\n        address[] memory result = new address[](records.length);\\n        for (uint256 i = 0; i < records.length; i++) {\\n            result[i] = records[i].juror;\\n        }\\n        return result;\\n    }\\n}\\n\\n/// @notice snarkjs \\u751f\\u6210\\u7684 Groth16 Verifier \\u63a5\\u53e3\\ninterface IVerifier {\\n    function verifyProof(\\n        uint256[2] calldata a,\\n        uint256[2][2] calldata b,\\n        uint256[2] calldata c,\\n        uint256[3] calldata input\\n    ) external view returns (bool);\\n}\\n\",\"keccak256\":\"0xf1b452432a4fb4cf2dc491410b6193f7075376b77fa4638c1cab304559a399b9\",\"license\":\"MIT\"},\"contracts/JuryRegistry.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.20;\\n\\n/// @title JuryRegistry - Jury \\u6ce8\\u518c\\u3001Stake \\u548c Slash \\u7ba1\\u7406\\n/// @notice Jury Agent \\u9700\\u8d28\\u62bc\\u4fdd\\u8bc1\\u91d1\\u53c2\\u4e0e\\u8bc4\\u5ba1\\uff0c\\u8fdd\\u89c4\\u884c\\u4e3a\\u5c06\\u88ab slash\\ncontract JuryRegistry {\\n    uint256 public constant MIN_STAKE = 0.01 ether;\\n\\n    struct Juror {\\n        uint256 stake;\\n        bool active; // \\u662f\\u5426\\u6709\\u6d3b\\u8dc3\\u4efb\\u52a1\\n    }\\n\\n    mapping(address => Juror) public jurors;\\n    address[] public jurorList;\\n\\n    address public escrowContract; // \\u4ec5 ArbiterEscrow \\u53ef\\u8c03\\u7528 slash\\n    address public immutable owner;\\n\\n    event JurorRegistered(address indexed juror, uint256 stake);\\n    event JurorWithdrawn(address indexed juror, uint256 amount);\\n    event JurorSlashed(address indexed juror, uint256 amount);\\n\\n    modifier onlyEscrow() {\\n        require(msg.sender == escrowContract, \\\"Only escrow\\\");\\n        _;\\n    }\\n\\n    constructor() {\\n        owner = msg.sender;\\n    }\\n\\n    /// @notice \\u8bbe\\u7f6e ArbiterEscrow \\u5408\\u7ea6\\u5730\\u5740\\uff08deployer \\u8c03\\u7528\\u4e00\\u6b21\\uff09\\n    function setEscrowContract(address _escrow) external {\\n        require(msg.sender == owner, \\\"Not owner\\\");\\n        require(escrowContract == address(0), \\\"Already set\\\");\\n        escrowContract = _escrow;\\n    }\\n\\n    /// @notice Jury \\u6ce8\\u518c\\u5e76\\u8d28\\u62bc\\n    function register() external payable {\\n        require(msg.value >= MIN_STAKE, \\\"Stake too low\\\");\\n        require(jurors[msg.sender].stake == 0, \\\"Already registered\\\");\\n\\n        jurors[msg.sender] = Juror({ stake: msg.value, active: false });\\n        jurorList.push(msg.sender);\\n\\n        emit JurorRegistered(msg.sender, msg.value);\\n    }\\n\\n    /// @notice \\u65e0\\u6d3b\\u8dc3\\u4efb\\u52a1\\u65f6\\u53d6\\u56de stake\\n    function withdraw() external {\\n        Juror storage j = jurors[msg.sender];\\n        require(j.stake > 0, \\\"Not registered\\\");\\n        require(!j.active, \\\"Has active task\\\");\\n\\n        uint256 amount = j.stake;\\n        j.stake = 0;\\n        _removeFromList(msg.sender);\\n\\n        (bool ok, ) = msg.sender.call{value: amount}(\\\"\\\");\\n        require(ok, \\\"Transfer failed\\\");\\n\\n        emit JurorWithdrawn(msg.sender, amount);\\n    }\\n\\n    /// @notice ArbiterEscrow \\u8c03\\u7528\\uff1aslash Jury stake\\n    function slash(address juror, uint256 bps) external onlyEscrow {\\n        Juror storage j = jurors[juror];\\n        require(j.stake > 0, \\\"Not registered\\\");\\n\\n        uint256 amount = (j.stake * bps) / 10000;\\n        j.stake -= amount;\\n\\n        // slash \\u91d1\\u989d\\u7559\\u5728\\u5408\\u7ea6\\u4f5c\\u4e3a protocol treasury\\n        emit JurorSlashed(juror, amount);\\n    }\\n\\n    /// @notice ArbiterEscrow \\u8c03\\u7528\\uff1a\\u8bbe\\u7f6e Jury \\u6d3b\\u8dc3\\u72b6\\u6001\\n    function setActive(address juror, bool _active) external onlyEscrow {\\n        jurors[juror].active = _active;\\n    }\\n\\n    /// @notice \\u83b7\\u53d6\\u5df2\\u6ce8\\u518c Jury \\u603b\\u6570\\n    function getJurorCount() external view returns (uint256) {\\n        return jurorList.length;\\n    }\\n\\n    /// @notice \\u83b7\\u53d6 Jury \\u5730\\u5740\\n    function getJuror(uint256 index) external view returns (address) {\\n        return jurorList[index];\\n    }\\n\\n    /// @notice \\u68c0\\u67e5\\u662f\\u5426\\u5df2\\u6ce8\\u518c\\u4e14\\u6709\\u8db3\\u591f stake\\n    function isEligible(address juror) external view returns (bool) {\\n        return jurors[juror].stake >= MIN_STAKE && !jurors[juror].active;\\n    }\\n\\n    function _removeFromList(address juror) internal {\\n        for (uint256 i = 0; i < jurorList.length; i++) {\\n            if (jurorList[i] == juror) {\\n                jurorList[i] = jurorList[jurorList.length - 1];\\n                jurorList.pop();\\n                break;\\n            }\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0x7bfa8817cdd82fd718d54cf6401e743aededb96b55dd6c719a1d9e683e9a43b0\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x6080346200009657601f6200262638819003918201601f19168301916001600160401b038311848410176200009b57808492604094855283398101031262000096576200005a60206200005283620000b1565b9201620000b1565b600580546001600160a01b039384166001600160a01b0319918216179091556004805492909316911617905560405161255f9081620000c78239f35b600080fd5b634e487b7160e01b600052604160045260246000fd5b51906001600160a01b0382168203620000965756fe60a0604052600436101561001257600080fd5b60003560e01c806317e931cf14611a0e5780631bf6912d146119555780631d65e77e146116c25780632b7ac3f31461169957806335b05ec1146115e5578063690b06b6146115c8578063762ff4dc1461157b57806377cbc4001461136657806386e773f11461134a5780638b1e4549146113215780638d977672146111ba578063a386900114610f0a578063b05f233a14610eee578063b6cb58a514610ed0578063b83a520314610605578063d46ce651146102bc578063e97f6a68146102b7578063eae738dc1461029a578063eb6e6c1c1461021c5763fea27aa9146100f857600080fd5b346102175760208060031936011261021757600435600052600290818152604060002091825461012781612410565b916101356040519384611ae1565b81835260009485528385208484019591865b8484106101be57604080518881528751818a018190528a928201908a60005b8281106101735784840385f35b855180516001600160a01b031685528083015185840152604080820151908601526060808201511515908601526080908101511515908501529481019460a090930192600101610166565b6004876001926040516101d081611ab1565b848060a01b0387541681528487015483820152858701546040820152600387015460ff908181161515606084015260081c1615156080820152815201930193019291610147565b600080fd5b34610217576040366003190112610217576024356004356000526002602052604060002080548210156102175760a09161025591611c39565b5060ff600180841b03825416916001810154906003600282015491015491604051948552602085015260408401528181161515606084015260081c1615156080820152f35b346102175760003660031901126102175760206040516103e88152f35b611a0e565b610100366003190112610217576004356001600160a01b038116908190036102175760603660231901126102175767ffffffffffffffff906084358281116102175761030c903690600401611c0b565b909160a43560c43560e43534156105d457831561059e576103306064841115611c6b565b6001968783101580610593575b156105635761034d428311611ca5565b6000549561035a87611ce3565b600055866000526020978989526040600020938885558a85016bffffffffffffffffffffffff60a01b90338282541617905588600287019182541617905534600386015560048501556005840160ff1981541690556024356006850155604435600785015560643560088501556009840192821161054d576103dc8354611b2b565b601f8111610508575b5098879899600090601f84116001146104745792808060809997947f487933e034710db4f40e8db61e822d2fff54215ca95e11baff632af66e1fbab69b999794600d97600094610469575b50501b916000199060031b1c19161790555b83600a820155015560405191338352878301523460408301526060820152a2604051908152f35b013592508f80610430565b60008581528c81209394939290601f198516908e5b8282106104f057505092600d9592859260809b99967f487933e034710db4f40e8db61e822d2fff54215ca95e11baff632af66e1fbab69d9b9996106104d6575b505050811b019055610442565b0135600019600384901b60f8161c191690558d80806104c9565b8484013586558e9d509487019492830192018e610489565b8360005289600020601f840160051c8101918b8510610543575b601f0160051c01905b81811061053857506103e5565b600081558b0161052b565b9091508190610522565b634e487b7160e01b600052604160045260246000fd5b60405162461bcd60e51b81526020600482015260086024820152674a75727920312d3560c01b6044820152606490fd5b50600583111561033d565b60405162461bcd60e51b815260206004820152600e60248201526d24b73b30b634b2103bb7b935b2b960911b6044820152606490fd5b60405162461bcd60e51b81526020600482015260096024820152684e6f20657363726f7760b81b6044820152606490fd5b34610217576101c03660031901126102175760443567ffffffffffffffff811161021757610637903690600401611c0b565b903660a41161021757366101241161021757366101641161021757366101c411610217576004356000526001602052604060002060ff6005820154166005811015610eba57600103610e865761069a60018060a01b036002830154163314611cf2565b6106aa6004820154421115611ca5565b60068101546101643503610e4c5760078101546101843503610e12576024356101a43503610dd757600554604080516308a3cff560e11b8152916001600160a01b031690606460048401378160a46000604483015b60028210610dbd5750505061016481602093604061012460c48401376060836101048401375afa9081156109ed57600091610d9e575b5015610d6657602435600b82015567ffffffffffffffff831161054d5761075f600c820154611b2b565b601f8111610d1f575b50826000601f8211600114610cb157600091610ca6575b508360011b906000198560031b1c191617600c8201555b60058101805460ff191660021790554261012c810110610c9057601061012c4201910155600435600052600160205260406000209160018060a01b03600454169160405192637092a91d60e11b8452602084600481845afa9384156109ed57600094610c5c575b5061080784612428565b9360009160005b828110610b4b57505050600d850154808210610b065760405142602082015244604082015260043560608201526060815280608081011067ffffffffffffffff60808301111761054d57608081016040526020815191012060005b828110610a65575050505060005b600d850154811015610a0f576001600160a01b03610895828661245a565b51169060043560005260026020526040600020604051906108b582611ab1565b8382526000602083015260006040830152600060608301526000608083015280546801000000000000000081101561054d576108f691600182018155611c39565b9190916109f95760018060a01b038151166bffffffffffffffffffffffff60a01b8354161782556020810151600183015560408101516002830155600380920190606081015115159060ff61ff0060808554930151151560081b1692169061ffff19161717905560043560005260026020526040600020549060205260406000208360005260205260406000205560018060a01b036004541691823b1561021757600092604484926040519586938492632ce962cf60e01b84526004840152600160248401525af19081156109ed57600d926109d7926109de575b50611ce3565b9050610877565b6109e790611acd565b876109d1565b6040513d6000823e3d90fd5b634e487b7160e01b600052600060045260246000fd5b507f5d0934175fbdf2ea7c537c62ca98fc339cf5aef1ac86ef8cbc5e89b91b41772b90826040519160208352816020840152604083013760006040848301015260408160043594601f80199101168101030190a2005b604051602081019083825282604082015260408152610a8381611a95565b51902090610a918186612155565b918215610af057610aeb92610aa7910682611d43565b6001600160a01b03610ab9828b61245a565b511690610ada6001600160a01b03610ad1858d61245a565b5116918b61245a565b52610ae5828a61245a565b52611ce3565b610869565b634e487b7160e01b600052601260045260246000fd5b60405162461bcd60e51b815260206004820152601a60248201527f4e6f7420656e6f75676820656c696769626c65206a75726f72730000000000006044820152606490fd5b604051630a03854560e41b815260048101829052602081602481865afa9081156109ed57600091610c1a575b506040516366e305fd60e01b81526001600160a01b0382166004820152602081602481875afa9081156109ed57600091610beb575b50610bc1575b50610bbc90611ce3565b61080e565b93610bbc9190610be4610bd382611ce3565b966001600160a01b0316918a61245a565b5290610bb2565b610c0d915060203d602011610c13575b610c058183611ae1565b810190611d2b565b8a610bac565b503d610bfb565b90506020813d602011610c54575b81610c3560209383611ae1565b8101031261021757516001600160a01b03811681036102175789610b77565b3d9150610c28565b9093506020813d602011610c88575b81610c7860209383611ae1565b81010312610217575192856107fd565b3d9150610c6b565b634e487b7160e01b600052601160045260246000fd5b90508201358461077f565b9050600c820160005260206000209060005b601f1986168110610d07575084601f19811610610ced575b5050600183811b01600c820155610796565b830135600019600386901b60f8161c191690558380610cdb565b90916020600181928588013581550193019101610cc3565b600c82016000526020600020601f850160051c810160208610610d5f575b601f830160051c82018110610d53575050610768565b60008155600101610d3d565b5080610d3d565b60405162461bcd60e51b815260206004820152601060248201526f1692c81c1c9bdbd9881a5b9d985b1a5960821b6044820152606490fd5b610db7915060203d602011610c1357610c058183611ae1565b84610735565b8293506040818160019495819437019301910184926106ff565b60405162461bcd60e51b81526020600482015260136024820152720c6dedadad2e8dacadce840dad2e6dac2e8c6d606b1b6044820152606490fd5b60405162461bcd60e51b81526020600482015260126024820152710dad2dc8cd2cad8c8e640dad2e6dac2e8c6d60731b6044820152606490fd5b60405162461bcd60e51b81526020600482015260126024820152710dad2dc98cadccee8d040dad2e6dac2e8c6d60731b6044820152606490fd5b60405162461bcd60e51b815260206004820152600c60248201526b139bdd081058d8d95c1d195960a21b6044820152606490fd5b634e487b7160e01b600052602160045260246000fd5b34610217576000366003190112610217576020600054604051908152f35b3461021757600036600319011261021757602060405160148152f35b346102175760603660031901126102175760043560248035908260005260206001815260406000209160ff60058401541660058110156111a55760030361116f57601183015480156111365742116110fc57610f696064851115611c6b565b84600052600382526040600020336000528252610faa610f98604060002054610f93811515611d50565b611d90565b86600052600284526040600020611c39565b5090600382019182549160ff8316156110c95760ff8360081c1661109357600182015460405186810190898252604435604082015260408152610fec81611a95565b519020036110605750600d949387936101007fe3a512f2b722eba73136c0de5172e96c972b81970c46f27f849721a417c9ed0194896002604096015561ff001916179055600f85019661103f8854611ce3565b809855825191338352820152a201541461105557005b61105e90612162565b005b84600d6064926040519262461bcd60e51b845260048401528201526c090c2e6d040dad2e6dac2e8c6d609b1b6044820152fd5b8460106064926040519262461bcd60e51b845260048401528201526f105b1c9958591e481c995d99585b195960821b6044820152fd5b84600d6064926040519262461bcd60e51b845260048401528201526c139bdd0818dbdb5b5a5d1d1959609a1b6044820152fd5b9060146064926040519262461bcd60e51b845260048401528201527314995d99585b081dda5b991bddc818db1bdcd95960621b6044820152fd5b60405162461bcd60e51b8152600481018490526012818401527114995d99585b081b9bdd081cdd185c9d195960721b6044820152606490fd5b9060106064926040519262461bcd60e51b845260048401528201526f4e6f742064656c696265726174696e6760801b6044820152fd5b50634e487b7160e01b60009081526021600452fd5b3461021757602036600319011261021757600435600052600160205260406000208054600160a01b60019003918260018201541692600282015416926003820154936004830154600584015460ff166006850161121690611b03565b9061122360098701611b65565b600a87015492600b88015492600c890161123c90611b65565b95600d8a01549b600e8b015498600f8c01549a60108d01549c601101549d60405180608052526080516020015260805160400152608051606001526080516080015260805160a00161128d91611a2b565b60805160c0016112b0916040809180518452602081015160208501520151910152565b610240806080516101200152608051016112c991611a38565b91608051610140015260805161016001526080518082039061018001526112ef91611a38565b946080516101a001526080516101c001526080516101e001526080516102000152608051610220015260805180910390f35b34610217576000366003190112610217576004546040516001600160a01b039091168152602090f35b346102175760203660031901126102175761105e600435611d9d565b3461021757604036600319011261021757600435806000526020600181526040600020906005820160ff8154166005811015610eba5760028114908115611570575b501561153757601083015442116114fb57836000526003825260406000203360005282526113f56113e3604060002054610f93811515611d50565b85600052600284526040600020611c39565b50906003820180549260ff84166114c2576001602435910155600160ff19809416179055600e8401916114288354611ce3565b80935581549060ff82166005811015610eba576002146114b4575b505050600d8301541461147d575b7f832402fe0c2ab65bc597e7580443378f72b523c337d66efd7ae2b1bae8a5dfa19150604051338152a2005b61012c4201804211610c905760117f832402fe0c2ab65bc597e7580443378f72b523c337d66efd7ae2b1bae8a5dfa1930155611451565b166003179055848080611443565b60405162461bcd60e51b8152600481018690526011602482015270105b1c9958591e4818dbdb5b5a5d1d1959607a1b6044820152606490fd5b60405162461bcd60e51b815260048101839052601460248201527310dbdb5b5a5d081dda5b991bddc818db1bdcd95960621b6044820152606490fd5b60405162461bcd60e51b81526004810183905260116024820152704e6f7420696e206a75727920706861736560781b6044820152606490fd5b6003915014856113a8565b34610217576040366003190112610217576024356001600160a01b038116908190036102175760043560005260036020526040600020906000526020526020604060002054604051908152f35b346102175760003660031901126102175760206040516107d08152f35b3461021757602080600319360112610217576004356000526002815260406000209081549161161383612428565b9260005b81811061166c575050506040519181839283018184528251809152816040850193019160005b82811061164c57505050500390f35b83516001600160a01b03168552869550938101939281019260010161163d565b8061167c61169192859795611c39565b50546001600160a01b0316610ae5828661245a565b939193611617565b34610217576000366003190112610217576005546040516001600160a01b039091168152602090f35b346102175760203660031901126102175760006101e06040516116e481611a78565b8281528260208201528260408201528260608201528260808201528260a082015260405161171181611a95565b83815283602082015283604082015260c0820152606060e0820152826101008201528261012082015260606101408201528261016082015282610180820152826101a0820152826101c08201520152600435600052600160205260406000206040519061177d82611a78565b8054825260018101546001600160a01b0390811660208401526002820154166040830152600381015460608301526004810154608083015260058082015460ff169190821015610eba5760119160a08401526117db60068201611b03565b60c08401526117ec60098201611b65565b60e0840152600a810154610100840152600b810154610120840152611813600c8201611b65565b610140840152600d810154610160840152600e810154610180840152600f8101546101a084015260108101546101c084015201546101e08201526040518091602082528051602083015260018060a01b03602082015116604083015260018060a01b03604082015116606083015260608101516080830152608081015160a08301526118a760a082015160c0840190611a2b565b60c0810151805160e084015260208101516101008401526040015161012083015260e08101516101e061191c6118ec6102409384610140880152610260870190611a38565b610100850151610160870152610120850151610180870152610140850151868203601f19016101a0880152611a38565b926101608101516101c0860152610180810151828601526101a08101516102008601526101c08101516102208601520151908301520390f35b346102175760203660031901126102175760043580600052600160205260406000206005810190815460ff81166005811015610eba576119db576119a86001926002848060a01b03910154163314611cf2565b60ff19161790557fc8717b61398fb9d7cacf49fe1e296b2f10e9711226b532842b6ffd642cb6a2c66020604051338152a2005b60405162461bcd60e51b815260206004820152600b60248201526a139bdd0810dc99585d195960aa1b6044820152606490fd5b3461021757600036600319011261021757602060405161012c8152f35b906005821015610eba5752565b919082519283825260005b848110611a64575050826000602080949584010152601f8019910116010190565b602081830181015184830182015201611a43565b610200810190811067ffffffffffffffff82111761054d57604052565b6060810190811067ffffffffffffffff82111761054d57604052565b60a0810190811067ffffffffffffffff82111761054d57604052565b67ffffffffffffffff811161054d57604052565b90601f8019910116810190811067ffffffffffffffff82111761054d57604052565b90604051611b1081611a95565b60406002829480548452600181015460208501520154910152565b90600182811c92168015611b5b575b6020831014611b4557565b634e487b7160e01b600052602260045260246000fd5b91607f1691611b3a565b9060405191826000825492611b7984611b2b565b908184526001948581169081600014611be85750600114611ba5575b5050611ba392500383611ae1565b565b9093915060005260209081600020936000915b818310611bd0575050611ba393508201013880611b95565b85548884018501529485019487945091830191611bb8565b915050611ba394506020925060ff191682840152151560051b8201013880611b95565b9181601f840112156102175782359167ffffffffffffffff8311610217576020838186019501011161021757565b8054821015611c555760005260206000209060021b0190600090565b634e487b7160e01b600052603260045260246000fd5b15611c7257565b60405162461bcd60e51b815260206004820152600b60248201526a053636f7265203e203130360ac1b6044820152606490fd5b15611cac57565b60405162461bcd60e51b815260206004820152600f60248201526e111958591b1a5b99481c185cdcd959608a1b6044820152606490fd5b6000198114610c905760010190565b15611cf957565b60405162461bcd60e51b815260206004820152600a6024820152692737ba103bb7b935b2b960b11b6044820152606490fd5b90816020910312610217575180151581036102175790565b91908201809211610c9057565b15611d5757565b60405162461bcd60e51b81526020600482015260116024820152704e6f742061737369676e6564206a75727960781b6044820152606490fd5b8015610c90576000190190565b600090808252600190602092828452604092838220600581019182549260ff9384811660058110156120e85783811591821561214b575b50508061213e575b6120fc5750805484811660058110156120e857600281149081156120dd575b50806120d0575b806120c3575b806120b2575b61201c57508381541693600585101561200857600380951480611ffb575b80611fee575b80611fdd575b611e8057875162461bcd60e51b8152600481018a9052601860248201527f4e6f2074696d656f757420636f6e646974696f6e206d657400000000000000006044820152606490fd5b868652600289528786209698979596839188835b611f07575b50505050600f83015415611eb75750505050505050611ba390612162565b91611ef5606096949260008051602061250a833981519152989694600460ff1982541617905582019160018060a01b0393848454169101549061246e565b541691815193818552840152820152a2565b8254811015611fd8578188611f1c8386611c39565b5001541680611fbe575b611f3a575b611f3490611ce3565b83611e94565b9091925060018060a01b0360048181541691611f568487611c39565b50541690823b15611fba579060448c92838d5195869485936302fb4d8560e01b85528401526107d060248401525af18015611fb05791611f349187959493611fa1575b509050611f2b565b611faa90611acd565b38611f99565b89513d8c823e3d90fd5b8b80fd5b508188611fcb8386611c39565b50015460081c1615611f26565b611e99565b50600f840154600d85015411611e38565b5060118401544211611e32565b5060118401541515611e2c565b634e487b7160e01b86526021600452602486fd5b949691909792959350600e8601948554151560001461207357505050505054600d82015561012c42019182421161205f575060110155805460ff19166003179055565b634e487b7160e01b81526011600452602490fd5b6060969293955097600460008051602061250a83398151915298959960ff19161790558101611ef560018060a01b03926003848454169101549061246e565b50600e840154600d85015411611e0e565b5060108401544211611e08565b5060108401541515611e02565b600391501438611dfb565b634e487b7160e01b87526021600452602487fd5b60ff1916600417905581018054600390920154949660008051602061250a8339815191529660609691959450926001600160a01b039291611ef591841661246e565b5060048401544211611ddc565b1490508338611dd4565b91908203918211610c9057565b60008181526001908160205260409081812090809381906002918260205285842096848854905b8181106123b457505081156123a057049583825b612226575b5050916121f86003859360609795600560008051602061250a8339815191529a9801600460ff19825416179055600a86015488101594508460001461221257508401546001600160a01b0316935b01548361246e565b825193845260208401526001600160a01b031690820152a2565b8501546001600160a01b03169490506121f0565b815481101561239b57908160ff6003612240869585611c39565b50015460081c1661225c575b61225590611ce3565b909161219d565b909150878461226b8385611c39565b500154111561237d57601461228d89866122858587611c39565b500154612155565b11612313575b600480546001600160a01b0390811691906122ae8486611c39565b50541690823b1561230f579060448892838c519586948593632ce962cf60e01b85528401528160248401525af180156123055791612255918594936122f6575b50905061224c565b6122ff90611acd565b386122ee565b88513d88823e3d90fd5b8780fd5b600480546001600160a01b03908116919061232e8486611c39565b50541690823b1561230f579060448892838c5195869485936302fb4d8560e01b85528401526103e860248401525af180156123055761236e575b50612293565b61237790611acd565b38612368565b60146123968561238d8486611c39565b5001548a612155565b61228d565b6121a2565b634e487b7160e01b85526012600452602485fd5b858a60ff60036123c48584611c39565b50015460081c166123e0575b50506123db90611ce3565b612189565b829594612406926123f76123db9561240094611c39565b50015490611d43565b93611ce3565b939050858a6123d0565b67ffffffffffffffff811161054d5760051b60200190565b9061243282612410565b61243f6040519182611ae1565b8281528092612450601f1991612410565b0190602036910137565b8051821015611c555760209160051b010190565b60008080809481945af1903d15612503573d9067ffffffffffffffff82116124ef57604051916124a8601f8201601f191660200184611ae1565b825260203d92013e5b156124b857565b60405162461bcd60e51b815260206004820152600f60248201526e151c985b9cd9995c8819985a5b1959608a1b6044820152606490fd5b634e487b7160e01b81526041600452602490fd5b506124b156fe3650c68c63e76b8753bf7b55486399babb3b9b783a900219c7adecb43982f979a264697066735822122099733de4c0c9a93cadd47ba648d42c8c56692172feaca055e38ea749b613b1ea64736f6c63430008140033",
+  "deployedBytecode": "0x60a0604052600436101561001257600080fd5b60003560e01c806317e931cf14611a0e5780631bf6912d146119555780631d65e77e146116c25780632b7ac3f31461169957806335b05ec1146115e5578063690b06b6146115c8578063762ff4dc1461157b57806377cbc4001461136657806386e773f11461134a5780638b1e4549146113215780638d977672146111ba578063a386900114610f0a578063b05f233a14610eee578063b6cb58a514610ed0578063b83a520314610605578063d46ce651146102bc578063e97f6a68146102b7578063eae738dc1461029a578063eb6e6c1c1461021c5763fea27aa9146100f857600080fd5b346102175760208060031936011261021757600435600052600290818152604060002091825461012781612410565b916101356040519384611ae1565b81835260009485528385208484019591865b8484106101be57604080518881528751818a018190528a928201908a60005b8281106101735784840385f35b855180516001600160a01b031685528083015185840152604080820151908601526060808201511515908601526080908101511515908501529481019460a090930192600101610166565b6004876001926040516101d081611ab1565b848060a01b0387541681528487015483820152858701546040820152600387015460ff908181161515606084015260081c1615156080820152815201930193019291610147565b600080fd5b34610217576040366003190112610217576024356004356000526002602052604060002080548210156102175760a09161025591611c39565b5060ff600180841b03825416916001810154906003600282015491015491604051948552602085015260408401528181161515606084015260081c1615156080820152f35b346102175760003660031901126102175760206040516103e88152f35b611a0e565b610100366003190112610217576004356001600160a01b038116908190036102175760603660231901126102175767ffffffffffffffff906084358281116102175761030c903690600401611c0b565b909160a43560c43560e43534156105d457831561059e576103306064841115611c6b565b6001968783101580610593575b156105635761034d428311611ca5565b6000549561035a87611ce3565b600055866000526020978989526040600020938885558a85016bffffffffffffffffffffffff60a01b90338282541617905588600287019182541617905534600386015560048501556005840160ff1981541690556024356006850155604435600785015560643560088501556009840192821161054d576103dc8354611b2b565b601f8111610508575b5098879899600090601f84116001146104745792808060809997947f487933e034710db4f40e8db61e822d2fff54215ca95e11baff632af66e1fbab69b999794600d97600094610469575b50501b916000199060031b1c19161790555b83600a820155015560405191338352878301523460408301526060820152a2604051908152f35b013592508f80610430565b60008581528c81209394939290601f198516908e5b8282106104f057505092600d9592859260809b99967f487933e034710db4f40e8db61e822d2fff54215ca95e11baff632af66e1fbab69d9b9996106104d6575b505050811b019055610442565b0135600019600384901b60f8161c191690558d80806104c9565b8484013586558e9d509487019492830192018e610489565b8360005289600020601f840160051c8101918b8510610543575b601f0160051c01905b81811061053857506103e5565b600081558b0161052b565b9091508190610522565b634e487b7160e01b600052604160045260246000fd5b60405162461bcd60e51b81526020600482015260086024820152674a75727920312d3560c01b6044820152606490fd5b50600583111561033d565b60405162461bcd60e51b815260206004820152600e60248201526d24b73b30b634b2103bb7b935b2b960911b6044820152606490fd5b60405162461bcd60e51b81526020600482015260096024820152684e6f20657363726f7760b81b6044820152606490fd5b34610217576101c03660031901126102175760443567ffffffffffffffff811161021757610637903690600401611c0b565b903660a41161021757366101241161021757366101641161021757366101c411610217576004356000526001602052604060002060ff6005820154166005811015610eba57600103610e865761069a60018060a01b036002830154163314611cf2565b6106aa6004820154421115611ca5565b60068101546101643503610e4c5760078101546101843503610e12576024356101a43503610dd757600554604080516308a3cff560e11b8152916001600160a01b031690606460048401378160a46000604483015b60028210610dbd5750505061016481602093604061012460c48401376060836101048401375afa9081156109ed57600091610d9e575b5015610d6657602435600b82015567ffffffffffffffff831161054d5761075f600c820154611b2b565b601f8111610d1f575b50826000601f8211600114610cb157600091610ca6575b508360011b906000198560031b1c191617600c8201555b60058101805460ff191660021790554261012c810110610c9057601061012c4201910155600435600052600160205260406000209160018060a01b03600454169160405192637092a91d60e11b8452602084600481845afa9384156109ed57600094610c5c575b5061080784612428565b9360009160005b828110610b4b57505050600d850154808210610b065760405142602082015244604082015260043560608201526060815280608081011067ffffffffffffffff60808301111761054d57608081016040526020815191012060005b828110610a65575050505060005b600d850154811015610a0f576001600160a01b03610895828661245a565b51169060043560005260026020526040600020604051906108b582611ab1565b8382526000602083015260006040830152600060608301526000608083015280546801000000000000000081101561054d576108f691600182018155611c39565b9190916109f95760018060a01b038151166bffffffffffffffffffffffff60a01b8354161782556020810151600183015560408101516002830155600380920190606081015115159060ff61ff0060808554930151151560081b1692169061ffff19161717905560043560005260026020526040600020549060205260406000208360005260205260406000205560018060a01b036004541691823b1561021757600092604484926040519586938492632ce962cf60e01b84526004840152600160248401525af19081156109ed57600d926109d7926109de575b50611ce3565b9050610877565b6109e790611acd565b876109d1565b6040513d6000823e3d90fd5b634e487b7160e01b600052600060045260246000fd5b507f5d0934175fbdf2ea7c537c62ca98fc339cf5aef1ac86ef8cbc5e89b91b41772b90826040519160208352816020840152604083013760006040848301015260408160043594601f80199101168101030190a2005b604051602081019083825282604082015260408152610a8381611a95565b51902090610a918186612155565b918215610af057610aeb92610aa7910682611d43565b6001600160a01b03610ab9828b61245a565b511690610ada6001600160a01b03610ad1858d61245a565b5116918b61245a565b52610ae5828a61245a565b52611ce3565b610869565b634e487b7160e01b600052601260045260246000fd5b60405162461bcd60e51b815260206004820152601a60248201527f4e6f7420656e6f75676820656c696769626c65206a75726f72730000000000006044820152606490fd5b604051630a03854560e41b815260048101829052602081602481865afa9081156109ed57600091610c1a575b506040516366e305fd60e01b81526001600160a01b0382166004820152602081602481875afa9081156109ed57600091610beb575b50610bc1575b50610bbc90611ce3565b61080e565b93610bbc9190610be4610bd382611ce3565b966001600160a01b0316918a61245a565b5290610bb2565b610c0d915060203d602011610c13575b610c058183611ae1565b810190611d2b565b8a610bac565b503d610bfb565b90506020813d602011610c54575b81610c3560209383611ae1565b8101031261021757516001600160a01b03811681036102175789610b77565b3d9150610c28565b9093506020813d602011610c88575b81610c7860209383611ae1565b81010312610217575192856107fd565b3d9150610c6b565b634e487b7160e01b600052601160045260246000fd5b90508201358461077f565b9050600c820160005260206000209060005b601f1986168110610d07575084601f19811610610ced575b5050600183811b01600c820155610796565b830135600019600386901b60f8161c191690558380610cdb565b90916020600181928588013581550193019101610cc3565b600c82016000526020600020601f850160051c810160208610610d5f575b601f830160051c82018110610d53575050610768565b60008155600101610d3d565b5080610d3d565b60405162461bcd60e51b815260206004820152601060248201526f1692c81c1c9bdbd9881a5b9d985b1a5960821b6044820152606490fd5b610db7915060203d602011610c1357610c058183611ae1565b84610735565b8293506040818160019495819437019301910184926106ff565b60405162461bcd60e51b81526020600482015260136024820152720c6dedadad2e8dacadce840dad2e6dac2e8c6d606b1b6044820152606490fd5b60405162461bcd60e51b81526020600482015260126024820152710dad2dc8cd2cad8c8e640dad2e6dac2e8c6d60731b6044820152606490fd5b60405162461bcd60e51b81526020600482015260126024820152710dad2dc98cadccee8d040dad2e6dac2e8c6d60731b6044820152606490fd5b60405162461bcd60e51b815260206004820152600c60248201526b139bdd081058d8d95c1d195960a21b6044820152606490fd5b634e487b7160e01b600052602160045260246000fd5b34610217576000366003190112610217576020600054604051908152f35b3461021757600036600319011261021757602060405160148152f35b346102175760603660031901126102175760043560248035908260005260206001815260406000209160ff60058401541660058110156111a55760030361116f57601183015480156111365742116110fc57610f696064851115611c6b565b84600052600382526040600020336000528252610faa610f98604060002054610f93811515611d50565b611d90565b86600052600284526040600020611c39565b5090600382019182549160ff8316156110c95760ff8360081c1661109357600182015460405186810190898252604435604082015260408152610fec81611a95565b519020036110605750600d949387936101007fe3a512f2b722eba73136c0de5172e96c972b81970c46f27f849721a417c9ed0194896002604096015561ff001916179055600f85019661103f8854611ce3565b809855825191338352820152a201541461105557005b61105e90612162565b005b84600d6064926040519262461bcd60e51b845260048401528201526c090c2e6d040dad2e6dac2e8c6d609b1b6044820152fd5b8460106064926040519262461bcd60e51b845260048401528201526f105b1c9958591e481c995d99585b195960821b6044820152fd5b84600d6064926040519262461bcd60e51b845260048401528201526c139bdd0818dbdb5b5a5d1d1959609a1b6044820152fd5b9060146064926040519262461bcd60e51b845260048401528201527314995d99585b081dda5b991bddc818db1bdcd95960621b6044820152fd5b60405162461bcd60e51b8152600481018490526012818401527114995d99585b081b9bdd081cdd185c9d195960721b6044820152606490fd5b9060106064926040519262461bcd60e51b845260048401528201526f4e6f742064656c696265726174696e6760801b6044820152fd5b50634e487b7160e01b60009081526021600452fd5b3461021757602036600319011261021757600435600052600160205260406000208054600160a01b60019003918260018201541692600282015416926003820154936004830154600584015460ff166006850161121690611b03565b9061122360098701611b65565b600a87015492600b88015492600c890161123c90611b65565b95600d8a01549b600e8b015498600f8c01549a60108d01549c601101549d60405180608052526080516020015260805160400152608051606001526080516080015260805160a00161128d91611a2b565b60805160c0016112b0916040809180518452602081015160208501520151910152565b610240806080516101200152608051016112c991611a38565b91608051610140015260805161016001526080518082039061018001526112ef91611a38565b946080516101a001526080516101c001526080516101e001526080516102000152608051610220015260805180910390f35b34610217576000366003190112610217576004546040516001600160a01b039091168152602090f35b346102175760203660031901126102175761105e600435611d9d565b3461021757604036600319011261021757600435806000526020600181526040600020906005820160ff8154166005811015610eba5760028114908115611570575b501561153757601083015442116114fb57836000526003825260406000203360005282526113f56113e3604060002054610f93811515611d50565b85600052600284526040600020611c39565b50906003820180549260ff84166114c2576001602435910155600160ff19809416179055600e8401916114288354611ce3565b80935581549060ff82166005811015610eba576002146114b4575b505050600d8301541461147d575b7f832402fe0c2ab65bc597e7580443378f72b523c337d66efd7ae2b1bae8a5dfa19150604051338152a2005b61012c4201804211610c905760117f832402fe0c2ab65bc597e7580443378f72b523c337d66efd7ae2b1bae8a5dfa1930155611451565b166003179055848080611443565b60405162461bcd60e51b8152600481018690526011602482015270105b1c9958591e4818dbdb5b5a5d1d1959607a1b6044820152606490fd5b60405162461bcd60e51b815260048101839052601460248201527310dbdb5b5a5d081dda5b991bddc818db1bdcd95960621b6044820152606490fd5b60405162461bcd60e51b81526004810183905260116024820152704e6f7420696e206a75727920706861736560781b6044820152606490fd5b6003915014856113a8565b34610217576040366003190112610217576024356001600160a01b038116908190036102175760043560005260036020526040600020906000526020526020604060002054604051908152f35b346102175760003660031901126102175760206040516107d08152f35b3461021757602080600319360112610217576004356000526002815260406000209081549161161383612428565b9260005b81811061166c575050506040519181839283018184528251809152816040850193019160005b82811061164c57505050500390f35b83516001600160a01b03168552869550938101939281019260010161163d565b8061167c61169192859795611c39565b50546001600160a01b0316610ae5828661245a565b939193611617565b34610217576000366003190112610217576005546040516001600160a01b039091168152602090f35b346102175760203660031901126102175760006101e06040516116e481611a78565b8281528260208201528260408201528260608201528260808201528260a082015260405161171181611a95565b83815283602082015283604082015260c0820152606060e0820152826101008201528261012082015260606101408201528261016082015282610180820152826101a0820152826101c08201520152600435600052600160205260406000206040519061177d82611a78565b8054825260018101546001600160a01b0390811660208401526002820154166040830152600381015460608301526004810154608083015260058082015460ff169190821015610eba5760119160a08401526117db60068201611b03565b60c08401526117ec60098201611b65565b60e0840152600a810154610100840152600b810154610120840152611813600c8201611b65565b610140840152600d810154610160840152600e810154610180840152600f8101546101a084015260108101546101c084015201546101e08201526040518091602082528051602083015260018060a01b03602082015116604083015260018060a01b03604082015116606083015260608101516080830152608081015160a08301526118a760a082015160c0840190611a2b565b60c0810151805160e084015260208101516101008401526040015161012083015260e08101516101e061191c6118ec6102409384610140880152610260870190611a38565b610100850151610160870152610120850151610180870152610140850151868203601f19016101a0880152611a38565b926101608101516101c0860152610180810151828601526101a08101516102008601526101c08101516102208601520151908301520390f35b346102175760203660031901126102175760043580600052600160205260406000206005810190815460ff81166005811015610eba576119db576119a86001926002848060a01b03910154163314611cf2565b60ff19161790557fc8717b61398fb9d7cacf49fe1e296b2f10e9711226b532842b6ffd642cb6a2c66020604051338152a2005b60405162461bcd60e51b815260206004820152600b60248201526a139bdd0810dc99585d195960aa1b6044820152606490fd5b3461021757600036600319011261021757602060405161012c8152f35b906005821015610eba5752565b919082519283825260005b848110611a64575050826000602080949584010152601f8019910116010190565b602081830181015184830182015201611a43565b610200810190811067ffffffffffffffff82111761054d57604052565b6060810190811067ffffffffffffffff82111761054d57604052565b60a0810190811067ffffffffffffffff82111761054d57604052565b67ffffffffffffffff811161054d57604052565b90601f8019910116810190811067ffffffffffffffff82111761054d57604052565b90604051611b1081611a95565b60406002829480548452600181015460208501520154910152565b90600182811c92168015611b5b575b6020831014611b4557565b634e487b7160e01b600052602260045260246000fd5b91607f1691611b3a565b9060405191826000825492611b7984611b2b565b908184526001948581169081600014611be85750600114611ba5575b5050611ba392500383611ae1565b565b9093915060005260209081600020936000915b818310611bd0575050611ba393508201013880611b95565b85548884018501529485019487945091830191611bb8565b915050611ba394506020925060ff191682840152151560051b8201013880611b95565b9181601f840112156102175782359167ffffffffffffffff8311610217576020838186019501011161021757565b8054821015611c555760005260206000209060021b0190600090565b634e487b7160e01b600052603260045260246000fd5b15611c7257565b60405162461bcd60e51b815260206004820152600b60248201526a053636f7265203e203130360ac1b6044820152606490fd5b15611cac57565b60405162461bcd60e51b815260206004820152600f60248201526e111958591b1a5b99481c185cdcd959608a1b6044820152606490fd5b6000198114610c905760010190565b15611cf957565b60405162461bcd60e51b815260206004820152600a6024820152692737ba103bb7b935b2b960b11b6044820152606490fd5b90816020910312610217575180151581036102175790565b91908201809211610c9057565b15611d5757565b60405162461bcd60e51b81526020600482015260116024820152704e6f742061737369676e6564206a75727960781b6044820152606490fd5b8015610c90576000190190565b600090808252600190602092828452604092838220600581019182549260ff9384811660058110156120e85783811591821561214b575b50508061213e575b6120fc5750805484811660058110156120e857600281149081156120dd575b50806120d0575b806120c3575b806120b2575b61201c57508381541693600585101561200857600380951480611ffb575b80611fee575b80611fdd575b611e8057875162461bcd60e51b8152600481018a9052601860248201527f4e6f2074696d656f757420636f6e646974696f6e206d657400000000000000006044820152606490fd5b868652600289528786209698979596839188835b611f07575b50505050600f83015415611eb75750505050505050611ba390612162565b91611ef5606096949260008051602061250a833981519152989694600460ff1982541617905582019160018060a01b0393848454169101549061246e565b541691815193818552840152820152a2565b8254811015611fd8578188611f1c8386611c39565b5001541680611fbe575b611f3a575b611f3490611ce3565b83611e94565b9091925060018060a01b0360048181541691611f568487611c39565b50541690823b15611fba579060448c92838d5195869485936302fb4d8560e01b85528401526107d060248401525af18015611fb05791611f349187959493611fa1575b509050611f2b565b611faa90611acd565b38611f99565b89513d8c823e3d90fd5b8b80fd5b508188611fcb8386611c39565b50015460081c1615611f26565b611e99565b50600f840154600d85015411611e38565b5060118401544211611e32565b5060118401541515611e2c565b634e487b7160e01b86526021600452602486fd5b949691909792959350600e8601948554151560001461207357505050505054600d82015561012c42019182421161205f575060110155805460ff19166003179055565b634e487b7160e01b81526011600452602490fd5b6060969293955097600460008051602061250a83398151915298959960ff19161790558101611ef560018060a01b03926003848454169101549061246e565b50600e840154600d85015411611e0e565b5060108401544211611e08565b5060108401541515611e02565b600391501438611dfb565b634e487b7160e01b87526021600452602487fd5b60ff1916600417905581018054600390920154949660008051602061250a8339815191529660609691959450926001600160a01b039291611ef591841661246e565b5060048401544211611ddc565b1490508338611dd4565b91908203918211610c9057565b60008181526001908160205260409081812090809381906002918260205285842096848854905b8181106123b457505081156123a057049583825b612226575b5050916121f86003859360609795600560008051602061250a8339815191529a9801600460ff19825416179055600a86015488101594508460001461221257508401546001600160a01b0316935b01548361246e565b825193845260208401526001600160a01b031690820152a2565b8501546001600160a01b03169490506121f0565b815481101561239b57908160ff6003612240869585611c39565b50015460081c1661225c575b61225590611ce3565b909161219d565b909150878461226b8385611c39565b500154111561237d57601461228d89866122858587611c39565b500154612155565b11612313575b600480546001600160a01b0390811691906122ae8486611c39565b50541690823b1561230f579060448892838c519586948593632ce962cf60e01b85528401528160248401525af180156123055791612255918594936122f6575b50905061224c565b6122ff90611acd565b386122ee565b88513d88823e3d90fd5b8780fd5b600480546001600160a01b03908116919061232e8486611c39565b50541690823b1561230f579060448892838c5195869485936302fb4d8560e01b85528401526103e860248401525af180156123055761236e575b50612293565b61237790611acd565b38612368565b60146123968561238d8486611c39565b5001548a612155565b61228d565b6121a2565b634e487b7160e01b85526012600452602485fd5b858a60ff60036123c48584611c39565b50015460081c166123e0575b50506123db90611ce3565b612189565b829594612406926123f76123db9561240094611c39565b50015490611d43565b93611ce3565b939050858a6123d0565b67ffffffffffffffff811161054d5760051b60200190565b9061243282612410565b61243f6040519182611ae1565b8281528092612450601f1991612410565b0190602036910137565b8051821015611c555760209160051b010190565b60008080809481945af1903d15612503573d9067ffffffffffffffff82116124ef57604051916124a8601f8201601f191660200184611ae1565b825260203d92013e5b156124b857565b60405162461bcd60e51b815260206004820152600f60248201526e151c985b9cd9995c8819985a5b1959608a1b6044820152606490fd5b634e487b7160e01b81526041600452602490fd5b506124b156fe3650c68c63e76b8753bf7b55486399babb3b9b783a900219c7adecb43982f979a264697066735822122099733de4c0c9a93cadd47ba648d42c8c56692172feaca055e38ea749b613b1ea64736f6c63430008140033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "title": "ArbiterEscrow - Agent 协作条件结算协议",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "notice": "ZK pass/fail 门槛 + Commit-Reveal Jury 主观裁决 + 条件 Escrow 结算",
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 79,
+        "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+        "label": "taskCount",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 84,
+        "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+        "label": "tasks",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_mapping(t_uint256,t_struct(Task)51_storage)"
+      },
+      {
+        "astId": 90,
+        "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+        "label": "juryRecords",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_mapping(t_uint256,t_array(t_struct(JuryRecord)62_storage)dyn_storage)"
+      },
+      {
+        "astId": 96,
+        "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+        "label": "juryIndex",
+        "offset": 0,
+        "slot": "3",
+        "type": "t_mapping(t_uint256,t_mapping(t_address,t_uint256))"
+      },
+      {
+        "astId": 99,
+        "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+        "label": "juryRegistry",
+        "offset": 0,
+        "slot": "4",
+        "type": "t_contract(JuryRegistry)1864"
+      },
+      {
+        "astId": 102,
+        "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+        "label": "verifier",
+        "offset": 0,
+        "slot": "5",
+        "type": "t_contract(IVerifier)1505"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_array(t_struct(JuryRecord)62_storage)dyn_storage": {
+        "base": "t_struct(JuryRecord)62_storage",
+        "encoding": "dynamic_array",
+        "label": "struct ArbiterEscrow.JuryRecord[]",
+        "numberOfBytes": "32"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_bytes32": {
+        "encoding": "inplace",
+        "label": "bytes32",
+        "numberOfBytes": "32"
+      },
+      "t_contract(IVerifier)1505": {
+        "encoding": "inplace",
+        "label": "contract IVerifier",
+        "numberOfBytes": "20"
+      },
+      "t_contract(JuryRegistry)1864": {
+        "encoding": "inplace",
+        "label": "contract JuryRegistry",
+        "numberOfBytes": "20"
+      },
+      "t_enum(Status)9": {
+        "encoding": "inplace",
+        "label": "enum ArbiterEscrow.Status",
+        "numberOfBytes": "1"
+      },
+      "t_mapping(t_address,t_uint256)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => uint256)",
+        "numberOfBytes": "32",
+        "value": "t_uint256"
+      },
+      "t_mapping(t_uint256,t_array(t_struct(JuryRecord)62_storage)dyn_storage)": {
+        "encoding": "mapping",
+        "key": "t_uint256",
+        "label": "mapping(uint256 => struct ArbiterEscrow.JuryRecord[])",
+        "numberOfBytes": "32",
+        "value": "t_array(t_struct(JuryRecord)62_storage)dyn_storage"
+      },
+      "t_mapping(t_uint256,t_mapping(t_address,t_uint256))": {
+        "encoding": "mapping",
+        "key": "t_uint256",
+        "label": "mapping(uint256 => mapping(address => uint256))",
+        "numberOfBytes": "32",
+        "value": "t_mapping(t_address,t_uint256)"
+      },
+      "t_mapping(t_uint256,t_struct(Task)51_storage)": {
+        "encoding": "mapping",
+        "key": "t_uint256",
+        "label": "mapping(uint256 => struct ArbiterEscrow.Task)",
+        "numberOfBytes": "32",
+        "value": "t_struct(Task)51_storage"
+      },
+      "t_string_storage": {
+        "encoding": "bytes",
+        "label": "string",
+        "numberOfBytes": "32"
+      },
+      "t_struct(JuryRecord)62_storage": {
+        "encoding": "inplace",
+        "label": "struct ArbiterEscrow.JuryRecord",
+        "members": [
+          {
+            "astId": 53,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "juror",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address"
+          },
+          {
+            "astId": 55,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "scoreHash",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_bytes32"
+          },
+          {
+            "astId": 57,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "score",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 59,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "committed",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_bool"
+          },
+          {
+            "astId": 61,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "revealed",
+            "offset": 1,
+            "slot": "3",
+            "type": "t_bool"
+          }
+        ],
+        "numberOfBytes": "128"
+      },
+      "t_struct(ObjectiveCriteria)16_storage": {
+        "encoding": "inplace",
+        "label": "struct ArbiterEscrow.ObjectiveCriteria",
+        "members": [
+          {
+            "astId": 11,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "minLength",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 13,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "minFieldCount",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 15,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "fieldListHash",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_bytes32"
+          }
+        ],
+        "numberOfBytes": "96"
+      },
+      "t_struct(Task)51_storage": {
+        "encoding": "inplace",
+        "label": "struct ArbiterEscrow.Task",
+        "members": [
+          {
+            "astId": 18,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "id",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 20,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "payer",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address"
+          },
+          {
+            "astId": 22,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "worker",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_address"
+          },
+          {
+            "astId": 24,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "escrow",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 26,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "deadline",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 29,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "status",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_enum(Status)9"
+          },
+          {
+            "astId": 32,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "objective",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_struct(ObjectiveCriteria)16_storage"
+          },
+          {
+            "astId": 34,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "subjectiveCriteria",
+            "offset": 0,
+            "slot": "9",
+            "type": "t_string_storage"
+          },
+          {
+            "astId": 36,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "minScore",
+            "offset": 0,
+            "slot": "10",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 38,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "resultCommitment",
+            "offset": 0,
+            "slot": "11",
+            "type": "t_bytes32"
+          },
+          {
+            "astId": 40,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "resultURI",
+            "offset": 0,
+            "slot": "12",
+            "type": "t_string_storage"
+          },
+          {
+            "astId": 42,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "juryCount",
+            "offset": 0,
+            "slot": "13",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 44,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "juryCommitted",
+            "offset": 0,
+            "slot": "14",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 46,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "juryRevealed",
+            "offset": 0,
+            "slot": "15",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 48,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "commitDeadline",
+            "offset": 0,
+            "slot": "16",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 50,
+            "contract": "contracts/ArbiterEscrow.sol:ArbiterEscrow",
+            "label": "revealDeadline",
+            "offset": 0,
+            "slot": "17",
+            "type": "t_uint256"
+          }
+        ],
+        "numberOfBytes": "576"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}

@@ -87,10 +87,11 @@ export async function registerJuror(privateKey, stakeAmount = "0.01") {
     abi: registryAbi,
     functionName: "register",
     value: parseEther(stakeAmount),
+    gas: 120_000n,
   });
 
   await clients.public.waitForTransactionReceipt({ hash });
-  console.log(`[Jury ${clients.account.address.slice(0, 8)}] 注册成功, stake: ${stakeAmount} ETH`);
+  console.log(`[Jury ${clients.account.address.slice(0, 8)}] 注册成功, stake: ${stakeAmount} MON`);
 }
 
 // ── Jury 评审完整流程：Commit → 等待 → Reveal ──────────────────
@@ -127,6 +128,7 @@ export async function judgeTask(taskId, privateKey) {
     abi: escrowAbi,
     functionName: "commitScore",
     args: [BigInt(taskId), scoreHash],
+    gas: 150_000n,
   });
   await clients.public.waitForTransactionReceipt({ hash: commitHash });
   console.log(`[Jury ${jurorAddr}] Commit 完成`);
@@ -143,6 +145,7 @@ export async function judgeTask(taskId, privateKey) {
         abi: escrowAbi,
         functionName: "revealScore",
         args: [BigInt(taskId), BigInt(clampedScore), salt],
+        gas: 200_000n,
       });
       await clients.public.waitForTransactionReceipt({ hash: revealHash });
       console.log(`[Jury ${jurorAddr}] Reveal 完成`);
@@ -178,6 +181,8 @@ export async function waitForAllCommits(taskId, expectedCount) {
 export async function registerMultipleJurors(privateKeys) {
   for (const pk of privateKeys) {
     await registerJuror(pk);
+    // Monad async execution: 3-block state delay (~1.2s) before next tx from same account
+    await new Promise(r => setTimeout(r, 1500));
   }
   console.log(`[Jury] ${privateKeys.length} 个 Jury 注册完成`);
 }

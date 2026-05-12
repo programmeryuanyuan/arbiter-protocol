@@ -15,6 +15,7 @@ contract JuryRegistry {
     address[] public jurorList;
 
     address public escrowContract; // 仅 ArbiterEscrow 可调用 slash
+    address public immutable owner;
 
     event JurorRegistered(address indexed juror, uint256 stake);
     event JurorWithdrawn(address indexed juror, uint256 amount);
@@ -25,10 +26,13 @@ contract JuryRegistry {
         _;
     }
 
-    constructor() {}
+    constructor() {
+        owner = msg.sender;
+    }
 
-    /// @notice 设置 ArbiterEscrow 合约地址（部署后调用一次）
+    /// @notice 设置 ArbiterEscrow 合约地址（deployer 调用一次）
     function setEscrowContract(address _escrow) external {
+        require(msg.sender == owner, "Not owner");
         require(escrowContract == address(0), "Already set");
         escrowContract = _escrow;
     }

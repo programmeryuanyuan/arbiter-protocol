@@ -101,6 +101,7 @@ export async function reviewAndAccept(taskId) {
       abi,
       functionName: "acceptTask",
       args: [BigInt(taskId)],
+      gas: 100_000n,
     });
     await publicClient.waitForTransactionReceipt({ hash });
     console.log(`[Agent B] 已接单 taskId: ${taskId}`);
@@ -180,6 +181,8 @@ export async function executeAndSubmit(taskId, task) {
   // 6. 提交链上
   const commitmentBytes32 = toHex(BigInt(commitment), { size: 32 });
 
+  // Monad precompile pricing: ecMul 5x (6k→30k), ecPairing 5x (45k→225k).
+  // Cold SLOAD also 3-4x vs Ethereum. Monad charges gas_limit, not gas_used — keep tight.
   const hash = await walletClient.writeContract({
     address: ESCROW_ADDRESS,
     abi,
@@ -193,6 +196,7 @@ export async function executeAndSubmit(taskId, task) {
       proofC,
       publicSignals.map(BigInt),
     ],
+    gas: 1_500_000n,
   });
 
   const receipt = await publicClient.waitForTransactionReceipt({ hash });
