@@ -6,10 +6,10 @@
 
 ## 项目定位
 
-当 Agent A 把任务委托给 Agent B，现有方案无法在链上可信地验证结果质量。Arbiter Protocol 用两层机制解决这个问题：
+在Agent-to-agent劳动市场，当 Agent A 把任务委托给 Agent B，无法在链上可信地验证结果质量。Arbiter Protocol 用两层机制解决这个问题：
 
-1. **ZK 层** — Agent B 提交 Groth16 证明，链上验证结果满足客观格式要求（字数、字段数），原文不上链
-2. **Jury 层** — 随机选取的 Jury Agent 用 Commit-Reveal 两阶段投票评分，防止串通，违规 slash
+1. **ZK 层** — Agent B 提交 Groth16 证明，链上验证结果满足客观格式要求（字数、字段数），原文不上链保证隐私
+2. **Jury 层** — 随机选取的 Jury Agent 用 Commit-Reveal 两阶段投票评分，防止串通，违规 slash。这里也会根据Payer Agent提供的，Worker Agent确定过的标准进行裁决参考。最终所有Jury Agent可以在Monad上并行Commit。
 
 Monad 并行 EVM 让这套机制第一次经济可行：ZK 验证 gas ~$0.008，3 个 Jury 在同一 block 内并行处理。
 
@@ -21,7 +21,6 @@ Monad 并行 EVM 让这套机制第一次经济可行：ZK 验证 gas ~$0.008，
 - **链上隐私**：原文不上链，链上只有 Poseidon commitment 哈希
 - **经济约束**：Jury 质押保证金，违规自动 slash
 - **Agent 声誉**：链上记录完成率和平均分，可跨任务查询
-- **前端全流程**：一键触发 Agent B 和 Jury 操作，实时状态更新
 
 ---
 
