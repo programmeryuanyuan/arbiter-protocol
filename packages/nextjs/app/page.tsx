@@ -8,6 +8,8 @@ import type { NextPage } from "next";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import CreateTaskButton from "~~/components/CreateTaskButton";
+import AcceptTaskButton from "~~/components/AcceptTaskButton";
+import JuryRegisterButton from "~~/components/JuryRegisterButton";
 
 // ========== 状态配置 ==========
 const STATUS_STEPS = [
@@ -253,6 +255,14 @@ const Home: NextPage = () => {
               })}
             </ul>
           </div>
+        </div>
+
+        {/* ---- 操作按钮区 ---- */}
+        <div className="flex flex-wrap items-center gap-3 mb-6">
+          <JuryRegisterButton />
+          {statusName === "Created" && (
+            <AcceptTaskButton taskId={taskId} />
+          )}
         </div>
 
         {/* ---- 主体内容 Grid ---- */}
